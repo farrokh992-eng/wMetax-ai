@@ -1,34 +1,42 @@
-name: Build wMetax ai
-
+name: Build and Release wMetax ai
 on:
   workflow_dispatch:
   push:
-    branches:
-      - main
-      - master
-
+    branches: [main]
+permissions:
+  contents: write
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
-
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
-
+      - name: Prepare official PNG logo
+        run: |
+          mkdir -p app/src/main/res/drawable
+          python3 - <<'PY'
+          import base64
+          from pathlib import Path
+          b=base64.b64decode(Path("assets/wmetax_logo.png.b64").read_text())
+          Path("app/src/main/res/drawable/wmetax_logo.png").write_bytes(b)
+          PY
+      - name: Read version
+        id: version
+        run: echo "version=$(python3 -c 'import json; print(json.load(open("version.json"))["version"])')" >> "$GITHUB_OUTPUT"
       - name: Build APK
         run: gradle assembleDebug --stacktrace
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
+      - name: Create release
+        uses: softprops/action-gh-release@v2
         with:
-          name: wMetax-ai-debug
-          path: app/build/outputs/apk/debug/app-debug.apk
+          tag_name: v${{ steps.version.outputs.version }}
+          name: wMetax ai v${{ steps.version.outputs.version }}
+          files: app/build/outputs/apk/debug/app-debug.apk
+          fail_on_unmatched_files: true
+          make_latest: true
