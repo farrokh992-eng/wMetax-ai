@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="fa" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -7,187 +7,397 @@
 <title>wMetax ai</title>
 
 <style>
-*{box-sizing:border-box}
-html,body{
-margin:0;height:100%;background:#050507;color:#f4f4f6;
-font-family:system-ui,-apple-system,"Segoe UI",sans-serif
+*{
+  box-sizing:border-box
 }
-body{overflow:hidden}
-button,input,textarea{font:inherit}
+
+html,body{
+  margin:0;
+  height:100%;
+  background:#050507;
+  color:#f4f4f6;
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif
+}
+
+body{
+  overflow:hidden
+}
+
+button,input,textarea{
+  font:inherit
+}
 
 .app{
-height:100dvh;max-width:900px;margin:auto;
-display:flex;flex-direction:column
+  height:100dvh;
+  max-width:900px;
+  margin:auto;
+  display:flex;
+  flex-direction:column
 }
+
+/* TOP */
 
 .top{
-height:62px;display:flex;align-items:center;padding:0 16px
+  height:62px;
+  display:flex;
+  align-items:center;
+  padding:0 16px
 }
 
-.brand{display:flex;align-items:center;gap:10px}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px
+}
 
 .brand img{
-width:36px;height:36px;border-radius:10px;object-fit:cover
+  width:36px;
+  height:36px;
+  border-radius:10px;
+  object-fit:cover
 }
 
-.logo{font-size:25px;font-weight:750}
-.logo span{font-weight:450;color:#8d8e96}
+.logo{
+  font-size:25px;
+  font-weight:750;
+  direction:ltr
+}
+
+.logo span{
+  font-weight:450;
+  color:#8d8e96
+}
 
 .actions{
-margin-left:auto;display:flex;gap:5px
+  margin-right:auto;
+  display:flex;
+  gap:5px;
+  direction:ltr
 }
 
 .icon{
-width:40px;height:40px;border:0;border-radius:13px;
-background:#15161b;color:#ddd;font-size:20px;cursor:pointer
+  width:40px;
+  height:40px;
+  border:0;
+  border-radius:13px;
+  background:#15161b;
+  color:#ddd;
+  font-size:20px;
+  cursor:pointer
 }
+
+/* MODEL */
 
 .modelbar{
-display:flex;justify-content:center;padding:2px 16px 8px
+  display:flex;
+  justify-content:center;
+  padding:2px 16px 8px
 }
 
-.model{position:relative}
+.model{
+  position:relative
+}
 
 .model>button{
-border:0;background:#17181d;color:#eee;border-radius:14px;
-padding:10px 15px;font-size:15px;min-width:165px;cursor:pointer
+  border:0;
+  background:#17181d;
+  color:#eee;
+  border-radius:14px;
+  padding:10px 15px;
+  font-size:15px;
+  min-width:160px;
+  cursor:pointer
 }
 
 .menu{
-position:absolute;top:48px;left:50%;transform:translateX(-50%);
-width:260px;background:#17181d;border:1px solid #292a31;
-border-radius:16px;padding:7px;z-index:30;
-box-shadow:0 18px 50px #0009
+  position:absolute;
+  top:48px;
+  left:50%;
+  transform:translateX(-50%);
+  width:250px;
+  background:#17181d;
+  border:1px solid #292a31;
+  border-radius:16px;
+  padding:7px;
+  z-index:30;
+  box-shadow:0 18px 50px #0009
 }
 
-.hidden{display:none!important}
+.hidden{
+  display:none!important
+}
 
 .item{
-padding:11px 12px;border-radius:11px;cursor:pointer;
-display:flex;justify-content:space-between
+  padding:11px 12px;
+  border-radius:11px;
+  cursor:pointer;
+  display:flex;
+  justify-content:space-between;
+  direction:rtl
 }
 
-.item:hover{background:#24252b}
-.item small{color:#85858d}
+.item:hover{
+  background:#24252b
+}
+
+.item small{
+  color:#85858d
+}
+
+/* MESSAGES */
 
 .messages{
-flex:1;overflow:auto;padding:10px 16px 120px;
-display:flex;flex-direction:column;gap:10px
+  flex:1;
+  overflow:auto;
+  padding:10px 16px 120px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  direction:rtl
 }
 
 .empty{
-margin:auto;text-align:center;color:#8c8d95
+  margin:auto;
+  text-align:center;
+  color:#8c8d95
 }
 
 .empty b{
-display:block;color:#eee;font-size:28px;margin-bottom:8px
+  display:block;
+  color:#eee;
+  font-size:28px;
+  margin-bottom:8px;
+  direction:ltr
 }
 
 .bubble{
-max-width:82%;padding:12px 14px;border-radius:17px;
-line-height:1.6;font-size:15px;white-space:pre-wrap;
-overflow-wrap:anywhere
+  max-width:82%;
+  padding:12px 14px;
+  border-radius:17px;
+  line-height:1.75;
+  font-size:15px;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  text-align:right
 }
 
-.user{align-self:flex-end;background:#2a2c34}
-.ai{align-self:flex-start;background:#15161b}
-.typing{opacity:.65}
+.user{
+  align-self:flex-start;
+  background:#2a2c34
+}
+
+.ai{
+  align-self:flex-end;
+  background:#15161b
+}
+
+.typing{
+  opacity:.65
+}
+
+/* COMPOSER */
 
 .composer{
-position:fixed;left:50%;transform:translateX(-50%);
-bottom:0;width:min(900px,100%);
-padding:10px 16px calc(10px + env(safe-area-inset-bottom));
-background:linear-gradient(transparent,#050507 25%);
-display:flex;gap:8px
+  position:fixed;
+  left:50%;
+  transform:translateX(-50%);
+  bottom:0;
+  width:min(900px,100%);
+  padding:10px 16px calc(10px + env(safe-area-inset-bottom));
+  background:linear-gradient(transparent,#050507 25%);
+  display:flex;
+  gap:8px;
+  direction:ltr
 }
 
 .input{
-flex:1;min-height:52px;max-height:140px;resize:none;border:0;
-outline:0;border-radius:18px;background:#17181d;color:#fff;
-padding:15px
+  flex:1;
+  min-height:52px;
+  max-height:140px;
+  resize:none;
+  border:0;
+  outline:0;
+  border-radius:18px;
+  background:#17181d;
+  color:#fff;
+  padding:15px;
+  direction:rtl;
+  text-align:right
 }
 
 .send{
-width:52px;height:52px;border:0;border-radius:17px;
-background:#f1f1f3;color:#08080a;font-size:22px;cursor:pointer
+  width:52px;
+  height:52px;
+  border:0;
+  border-radius:17px;
+  background:#f1f1f3;
+  color:#08080a;
+  font-size:22px;
+  cursor:pointer
 }
 
-.send:disabled{opacity:.5;cursor:default}
+.send:disabled{
+  opacity:.5;
+  cursor:default
+}
 
-.drawer,.modal{
-position:fixed;inset:0;background:#0008;z-index:50
+/* DRAWER / MODAL */
+
+.drawer,
+.modal{
+  position:fixed;
+  inset:0;
+  background:#0008;
+  z-index:50
 }
 
 .panel{
-height:100%;width:min(350px,88%);background:#101116;
-padding:20px;box-shadow:20px 0 60px #0008;overflow:auto
+  height:100%;
+  width:min(350px,88%);
+  background:#101116;
+  padding:20px;
+  box-shadow:20px 0 60px #0008;
+  overflow:auto
+}
+
+.drawer .panel{
+  margin-right:0;
+  margin-left:auto
 }
 
 .modal .panel{
-height:auto;max-height:85%;margin:8vh auto;border-radius:20px;
-width:min(440px,92%)
+  height:auto;
+  max-height:85%;
+  margin:8vh auto;
+  border-radius:20px;
+  width:min(440px,92%)
 }
 
-.close{float:right}
+.close{
+  float:left
+}
+
+/* CHATS */
 
 .chatrow{
-padding:12px;border-radius:12px;background:#18191f;
-margin-bottom:8px;display:flex;gap:8px;align-items:center
+  padding:12px;
+  border-radius:12px;
+  background:#18191f;
+  margin-bottom:8px;
+  display:flex;
+  gap:8px;
+  align-items:center;
+  direction:ltr
 }
 
 .chatrow button{
-background:none;border:0;color:#bbb;cursor:pointer;font-size:18px
+  background:none;
+  border:0;
+  color:#bbb;
+  cursor:pointer;
+  font-size:18px
 }
 
 .chatname{
-flex:1;cursor:pointer;overflow:hidden;
-text-overflow:ellipsis;white-space:nowrap
+  flex:1;
+  cursor:pointer;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  direction:rtl;
+  text-align:right
 }
 
+/* MEMORY */
+
 .memory{
-padding:12px;border-radius:12px;background:#18191f;margin:8px 0
+  padding:12px;
+  border-radius:12px;
+  background:#18191f;
+  margin:8px 0;
+  overflow:hidden
 }
 
 .memory button{
-float:right;background:none;border:0;color:#aaa;cursor:pointer
+  float:left;
+  background:none;
+  border:0;
+  color:#aaa;
+  cursor:pointer
 }
 
 .addmem{
-display:flex;gap:8px;margin-top:12px
+  display:flex;
+  gap:8px;
+  margin-top:12px
 }
 
 .addmem input{
-flex:1;background:#18191f;color:#fff;border:1px solid #292a31;
-border-radius:10px;padding:10px
+  flex:1;
+  background:#18191f;
+  color:#fff;
+  border:1px solid #292a31;
+  border-radius:10px;
+  padding:10px;
+  direction:rtl
 }
 
-.addmem button,.primary{
-border:0;border-radius:10px;padding:10px 14px;cursor:pointer
+.addmem button,
+.primary{
+  border:0;
+  border-radius:10px;
+  padding:10px 14px;
+  cursor:pointer
 }
 
-.field{margin:18px 0}
+/* SETTINGS */
+
+.field{
+  margin:18px 0
+}
 
 .field label{
-display:block;color:#aaa;font-size:13px;margin-bottom:7px
+  display:block;
+  color:#aaa;
+  font-size:13px;
+  margin-bottom:7px
 }
 
 .field input{
-width:100%;background:#18191f;color:#fff;
-border:1px solid #292a31;border-radius:11px;
-padding:12px;outline:none
+  width:100%;
+  background:#18191f;
+  color:#fff;
+  border:1px solid #292a31;
+  border-radius:11px;
+  padding:12px;
+  outline:none;
+  direction:ltr
 }
 
 .help{
-color:#777;font-size:12px;line-height:1.6
+  color:#777;
+  font-size:12px;
+  line-height:1.7
 }
 
 .status{
-min-height:18px;margin-top:8px;font-size:12px;line-height:1.5
+  min-height:20px;
+  margin-top:10px;
+  font-size:12px;
+  line-height:1.6
 }
 
-.danger{background:#2a1719;color:#ffb5b8}
-.success{color:#9ee6ae}
-.error{color:#ff9da3}
+.success{
+  color:#9ee6ae
+}
+
+.error{
+  color:#ff9da3
+}
+
+.warning{
+  color:#ffd58a
+}
 </style>
 </head>
 
@@ -197,66 +407,75 @@ min-height:18px;margin-top:8px;font-size:12px;line-height:1.5
 
 <header class="top">
 
-<div class="brand">
-<img src="./assets/wmetax_logo.png" alt="wMetax ai">
-<div class="logo">wMetax <span>ai</span></div>
-</div>
+  <div class="brand">
+    <img src="./assets/wmetax_logo.png" alt="wMetax ai">
+    <div class="logo">wMetax <span>ai</span></div>
+  </div>
 
-<div class="actions">
-<button class="icon" id="chats" title="Chats">☰</button>
-<button class="icon" id="settings" title="Settings">⚙</button>
-</div>
+  <div class="actions">
+    <button class="icon" id="chats" title="Chats">☰</button>
+    <button class="icon" id="settings" title="Settings">⚙</button>
+  </div>
 
 </header>
 
+
+<!-- MODEL -->
+
 <div class="modelbar">
 
-<div class="model">
+  <div class="model">
 
-<button id="modelBtn">Auto ⌄</button>
+    <button id="modelBtn">Auto ⌄</button>
 
-<div class="menu hidden" id="modelMenu"></div>
+    <div class="menu hidden" id="modelMenu"></div>
+
+  </div>
 
 </div>
 
-</div>
+
+<!-- MESSAGES -->
 
 <main class="messages" id="messages"></main>
 
+
+<!-- COMPOSER -->
+
 <div class="composer">
 
-<textarea
-id="input"
-class="input"
-rows="1"
-placeholder="Ask anything…"
-autocomplete="off"
-></textarea>
+  <textarea
+    id="input"
+    class="input"
+    rows="1"
+    placeholder="هر چیزی بپرسید…"
+    autocomplete="off"
+  ></textarea>
 
-<button id="send" class="send">➤</button>
-
-</div>
+  <button id="send" class="send">➤</button>
 
 </div>
 
+</div>
 
-<!-- CHATS -->
+
+<!-- CHAT DRAWER -->
 
 <div class="drawer hidden" id="drawer">
 
-<div class="panel">
+  <div class="panel">
 
-<button class="icon close" id="closeDrawer">×</button>
+    <button class="icon close" id="closeDrawer">×</button>
 
-<h2>Chats</h2>
+    <h2>Chats</h2>
 
-<div class="item" id="newChat">
-＋ New chat
-</div>
+    <div class="item" id="newChat">
+      ＋ چت جدید
+    </div>
 
-<div id="chatList"></div>
+    <div id="chatList"></div>
 
-</div>
+  </div>
 
 </div>
 
@@ -265,59 +484,65 @@ autocomplete="off"
 
 <div class="modal hidden" id="modal">
 
-<div class="panel">
+  <div class="panel">
 
-<button class="icon close" id="closeModal">×</button>
+    <button class="icon close" id="closeModal">×</button>
 
-<h2>Settings</h2>
+    <h2>Settings</h2>
 
-<div class="field">
+    <div class="field">
 
-<label>Gemini API Key</label>
+      <label>Gemini API Key</label>
 
-<input
-id="apiKey"
-type="password"
-placeholder="Enter Gemini API Key"
-autocomplete="off"
->
+      <input
+        id="apiKey"
+        type="password"
+        placeholder="Gemini API Key"
+        autocomplete="off"
+      >
 
-</div>
+    </div>
 
-<button class="primary" id="saveKey">
-Save API Key
-</button>
+    <button class="primary" id="saveKey">
+      ذخیره کلید
+    </button>
 
-<button class="primary danger" id="removeKey">
-Remove API Key
-</button>
+    <button class="primary danger" id="removeKey">
+      حذف کلید
+    </button>
 
-<p class="help">
-The API key is stored only in this browser's local storage.
-This is suitable for a private demo, not a public production app.
-</p>
+    <p class="help">
+      کلید فقط در localStorage همین مرورگر ذخیره می‌شود.
+      این روش فقط برای دمو و استفاده شخصی مناسب است.
+    </p>
 
-<hr style="border-color:#24252b;margin:22px 0">
+    <hr style="border-color:#24252b;margin:22px 0">
 
-<h3>Memory</h3>
+    <h3>Memory</h3>
 
-<p class="help">
-Memories are stored locally and sent as context to Gemini.
-</p>
+    <p class="help">
+      اطلاعات Memory در همین مرورگر ذخیره شده و همراه پیام‌ها
+      به Gemini ارسال می‌شود.
+    </p>
 
-<div id="memoryList"></div>
+    <div id="memoryList"></div>
 
-<div class="addmem">
+    <div class="addmem">
 
-<input id="memoryInput" placeholder="Add a memory…">
+      <input
+        id="memoryInput"
+        placeholder="یک Memory اضافه کنید…"
+      >
 
-<button id="addMemory">Save</button>
+      <button id="addMemory">
+        ذخیره
+      </button>
 
-</div>
+    </div>
 
-<div id="settingsStatus" class="status"></div>
+    <div id="settingsStatus" class="status"></div>
 
-</div>
+  </div>
 
 </div>
 
@@ -325,90 +550,72 @@ Memories are stored locally and sent as context to Gemini.
 <script>
 
 /* =========================================================
-   GEMINI MODELS
+   GEMINI CONFIG
 ========================================================= */
 
 /*
-  Primary:
-  gemini-3.5-flash-lite
-  Fast / low latency
-
-  Fallbacks:
-  gemini-3.1-flash-lite
-  gemini-3.5-flash
-  gemini-3.6-flash
+  مدل اصلی رسمی فعلی برای این دمو.
+  اگر موقتاً 503/429 بدهد، نسخه پایین retry می‌کند.
 */
 
-const GEMINI_MODELS = [
+const GEMINI_MODEL = "gemini-3.6-flash";
 
-"gemini-3.5-flash-lite",
-
-"gemini-3.1-flash-lite",
-
-"gemini-3.5-flash",
-
-"gemini-3.6-flash"
-
-];
-
-const GEMINI_BASE =
-"https://generativelanguage.googleapis.com/v1beta/models/";
+const GEMINI_ENDPOINT =
+  "https://generativelanguage.googleapis.com/v1beta/models/" +
+  GEMINI_MODEL +
+  ":generateContent";
 
 
 /* =========================================================
-   UI MODELS
-========================================================= */
-
-const MODELS = [
-
-{
-name:"Auto",
-id:"auto",
-description:"Fast Gemini"
-},
-
-{
-name:"Gemini",
-id:"gemini-3.5-flash-lite",
-description:"Gemini 3.5 Flash-Lite"
-}
-
-];
-
-
-/* =========================================================
-   STORAGE
+   UI
 ========================================================= */
 
 const $ = id => document.getElementById(id);
 
-function safeJSON(value,fallback){
 
-try{
-return value ? JSON.parse(value) : fallback;
-}catch{
-return fallback;
+/* =========================================================
+   LOCAL STORAGE
+========================================================= */
+
+function safeJSON(value, fallback){
+
+  try{
+
+    return value
+      ? JSON.parse(value)
+      : fallback;
+
+  }catch{
+
+    return fallback;
+
+  }
+
 }
 
-}
-
-let selectedModel =
-localStorage.getItem("wmetax_model") || "Auto";
 
 let chats =
-safeJSON(
-localStorage.getItem("wmetax_chats"),
-[]
-);
+  safeJSON(
+    localStorage.getItem("wmetax_chats"),
+    []
+  );
+
 
 let memories =
-safeJSON(
-localStorage.getItem("wmetax_memories"),
-[]
-);
+  safeJSON(
+    localStorage.getItem("wmetax_memories"),
+    []
+  );
+
 
 let currentId =
-localStorage.getItem("wmetax_current") || null;
+  localStorage.getItem("wmetax_current") ||
+  null;
+
+
+let selectedModel =
+  localStorage.getItem("wmetax_model") ||
+  "Auto";
 
 
 /* =========================================================
@@ -417,33 +624,35 @@ localStorage.getItem("wmetax_current") || null;
 
 function save(){
 
-localStorage.setItem(
-"wmetax_chats",
-JSON.stringify(chats)
-);
+  localStorage.setItem(
+    "wmetax_chats",
+    JSON.stringify(chats)
+  );
 
-localStorage.setItem(
-"wmetax_memories",
-JSON.stringify(memories)
-);
+  localStorage.setItem(
+    "wmetax_memories",
+    JSON.stringify(memories)
+  );
 
-if(currentId){
+  if(currentId){
 
-localStorage.setItem(
-"wmetax_current",
-currentId
-);
+    localStorage.setItem(
+      "wmetax_current",
+      currentId
+    );
 
-}
+  }
 
 }
 
 
 function getApiKey(){
 
-return localStorage.getItem(
-"wmetax_gemini_key"
-) || "";
+  return (
+    localStorage.getItem(
+      "wmetax_gemini_key"
+    ) || ""
+  );
 
 }
 
@@ -454,85 +663,95 @@ return localStorage.getItem(
 
 function currentChat(){
 
-return chats.find(
-chat => chat.id === currentId
-);
+  return chats.find(
+    chat => chat.id === currentId
+  );
 
 }
 
 
 function ensureChat(){
 
-if(!currentChat()){
+  if(!currentChat()){
 
-currentId =
-crypto.randomUUID();
+    currentId =
+      crypto.randomUUID();
 
-chats.unshift({
+    chats.unshift({
 
-id:currentId,
-title:"New chat",
-pinned:false,
-messages:[]
+      id:currentId,
 
-});
+      title:"New chat",
 
-save();
+      pinned:false,
 
-}
+      messages:[]
+
+    });
+
+    save();
+
+  }
 
 }
 
 
 /* =========================================================
-   RENDER
+   RENDER CHAT
 ========================================================= */
 
 function render(){
 
-const chat =
-currentChat();
+  const chat =
+    currentChat();
 
-const box =
-$("messages");
+  const box =
+    $("messages");
 
-box.innerHTML = "";
+  box.innerHTML = "";
 
-if(!chat || chat.messages.length === 0){
+  if(
+    !chat ||
+    chat.messages.length === 0
+  ){
 
-box.innerHTML = `
-<div class="empty">
-<b>wMetax ai</b>
-Ask anything.
-</div>
-`;
+    box.innerHTML = `
+      <div class="empty">
+        <b>wMetax ai</b>
+        هر چیزی بپرسید.
+      </div>
+    `;
 
-return;
+    return;
 
-}
+  }
 
-chat.messages.forEach(message=>{
 
-const bubble =
-document.createElement("div");
+  chat.messages.forEach(
+    message => {
 
-bubble.className =
-"bubble " +
-(
-message.role === "user"
-? "user"
-: "ai"
-);
+      const bubble =
+        document.createElement("div");
 
-bubble.textContent =
-message.content;
+      bubble.className =
+        "bubble " +
+        (
+          message.role === "user"
+            ? "user"
+            : "ai"
+        );
 
-box.appendChild(bubble);
+      bubble.textContent =
+        message.content;
 
-});
+      box.appendChild(bubble);
 
-box.scrollTop =
-box.scrollHeight;
+    }
+  );
+
+
+  box.scrollTop =
+    box.scrollHeight;
 
 }
 
@@ -543,113 +762,132 @@ box.scrollHeight;
 
 function renderChats(){
 
-const box =
-$("chatList");
+  const box =
+    $("chatList");
 
-box.innerHTML = "";
-
-[...chats]
-.sort(
-(a,b)=>
-Number(b.pinned) -
-Number(a.pinned)
-)
-.forEach(chat=>{
-
-const row =
-document.createElement("div");
-
-row.className =
-"chatrow";
+  box.innerHTML = "";
 
 
-const name =
-document.createElement("div");
+  [...chats]
+    .sort(
+      (a,b) =>
+        Number(b.pinned) -
+        Number(a.pinned)
+    )
+    .forEach(
+      chat => {
 
-name.className =
-"chatname";
+        const row =
+          document.createElement("div");
 
-name.textContent =
-(chat.pinned ? "📌 " : "") +
-chat.title;
-
-name.onclick = ()=>{
-
-currentId =
-chat.id;
-
-save();
-render();
-renderChats();
-
-$("drawer")
-.classList.add("hidden");
-
-};
+        row.className =
+          "chatrow";
 
 
-const pin =
-document.createElement("button");
+        const name =
+          document.createElement("div");
 
-pin.textContent =
-chat.pinned ? "📌" : "📍";
+        name.className =
+          "chatname";
 
-pin.title =
-chat.pinned
-? "Unpin chat"
-: "Pin chat";
-
-pin.onclick = ()=>{
-
-chat.pinned =
-!chat.pinned;
-
-save();
-renderChats();
-
-};
+        name.textContent =
+          (
+            chat.pinned
+              ? "📌 "
+              : ""
+          ) +
+          chat.title;
 
 
-const del =
-document.createElement("button");
+        name.onclick = () => {
 
-del.textContent = "×";
+          currentId =
+            chat.id;
 
-del.title =
-"Delete chat";
+          save();
 
-del.onclick = ()=>{
+          render();
 
-chats =
-chats.filter(
-x => x.id !== chat.id
-);
+          renderChats();
 
-if(currentId === chat.id){
+          $("drawer")
+            .classList
+            .add("hidden");
 
-currentId =
-chats[0]?.id || null;
-
-}
-
-save();
-
-ensureChat();
-render();
-renderChats();
-
-};
+        };
 
 
-row.append(
-name,
-pin,
-del
-);
+        const pin =
+          document.createElement("button");
 
-box.appendChild(row);
+        pin.textContent =
+          chat.pinned
+            ? "📌"
+            : "📍";
 
-});
+
+        pin.onclick = () => {
+
+          chat.pinned =
+            !chat.pinned;
+
+          save();
+
+          renderChats();
+
+        };
+
+
+        const del =
+          document.createElement("button");
+
+        del.textContent =
+          "×";
+
+
+        del.onclick = () => {
+
+          chats =
+            chats.filter(
+              x =>
+                x.id !== chat.id
+            );
+
+
+          if(
+            currentId ===
+            chat.id
+          ){
+
+            currentId =
+              chats[0]?.id ||
+              null;
+
+          }
+
+
+          save();
+
+          ensureChat();
+
+          render();
+
+          renderChats();
+
+        };
+
+
+        row.append(
+          name,
+          pin,
+          del
+        );
+
+
+        box.appendChild(row);
+
+      }
+    );
 
 }
 
@@ -660,45 +898,52 @@ box.appendChild(row);
 
 function renderMemories(){
 
-const box =
-$("memoryList");
+  const box =
+    $("memoryList");
 
-box.innerHTML = "";
+  box.innerHTML = "";
 
-memories.forEach(
-(memory,index)=>{
 
-const item =
-document.createElement("div");
+  memories.forEach(
+    (memory,index) => {
 
-item.className =
-"memory";
+      const item =
+        document.createElement("div");
 
-item.textContent =
-memory;
+      item.className =
+        "memory";
 
-const del =
-document.createElement("button");
+      item.textContent =
+        memory;
 
-del.textContent = "×";
 
-del.title =
-"Delete memory";
+      const del =
+        document.createElement("button");
 
-del.onclick = ()=>{
+      del.textContent =
+        "×";
 
-memories.splice(index,1);
 
-save();
-renderMemories();
+      del.onclick = () => {
 
-};
+        memories.splice(
+          index,
+          1
+        );
 
-item.appendChild(del);
+        save();
 
-box.appendChild(item);
+        renderMemories();
 
-});
+      };
+
+
+      item.appendChild(del);
+
+      box.appendChild(item);
+
+    }
+  );
 
 }
 
@@ -707,51 +952,88 @@ box.appendChild(item);
    MODEL MENU
 ========================================================= */
 
-MODELS.forEach(model=>{
+const modelItem =
+  document.createElement("div");
 
-const item =
-document.createElement("div");
+modelItem.className =
+  "item";
 
-item.className =
-"item";
-
-item.innerHTML = `
-<span>${model.name}</span>
-<small>${model.description}</small>
+modelItem.innerHTML = `
+  <span>Auto</span>
+  <small>Gemini 3.6 Flash</small>
 `;
 
-item.onclick = ()=>{
 
-selectedModel =
-model.name;
+modelItem.onclick = () => {
 
-localStorage.setItem(
-"wmetax_model",
-selectedModel
-);
+  selectedModel =
+    "Auto";
 
-$("modelBtn").textContent =
-selectedModel + " ⌄";
+  localStorage.setItem(
+    "wmetax_model",
+    "Auto"
+  );
 
-$("modelMenu")
-.classList.add("hidden");
+  $("modelBtn").textContent =
+    "Auto ⌄";
+
+  $("modelMenu")
+    .classList
+    .add("hidden");
 
 };
 
-$("modelMenu")
-.appendChild(item);
 
-});
+$("modelMenu")
+  .appendChild(modelItem);
+
+
+const fixedModel =
+  document.createElement("div");
+
+fixedModel.className =
+  "item";
+
+fixedModel.innerHTML = `
+  <span>Gemini</span>
+  <small>3.6 Flash</small>
+`;
+
+
+fixedModel.onclick = () => {
+
+  selectedModel =
+    "Gemini";
+
+  localStorage.setItem(
+    "wmetax_model",
+    "Gemini"
+  );
+
+  $("modelBtn").textContent =
+    "Gemini ⌄";
+
+  $("modelMenu")
+    .classList
+    .add("hidden");
+
+};
+
+
+$("modelMenu")
+  .appendChild(fixedModel);
 
 
 $("modelBtn").textContent =
-selectedModel + " ⌄";
+  selectedModel +
+  " ⌄";
 
 
-$("modelBtn").onclick = ()=>{
+$("modelBtn").onclick = () => {
 
-$("modelMenu")
-.classList.toggle("hidden");
+  $("modelMenu")
+    .classList
+    .toggle("hidden");
 
 };
 
@@ -760,194 +1042,239 @@ $("modelMenu")
    SETTINGS
 ========================================================= */
 
-$("settings").onclick = ()=>{
+$("settings").onclick = () => {
 
-$("apiKey").value =
-getApiKey();
+  $("apiKey").value =
+    getApiKey();
 
-$("settingsStatus").textContent = "";
+  $("settingsStatus").textContent =
+    "";
 
-$("settingsStatus").className =
-"status";
+  $("settingsStatus").className =
+    "status";
 
-$("modal")
-.classList.remove("hidden");
+  $("modal")
+    .classList
+    .remove("hidden");
 
-renderMemories();
-
-};
-
-
-$("closeModal").onclick = ()=>{
-
-$("modal")
-.classList.add("hidden");
+  renderMemories();
 
 };
 
 
-$("saveKey").onclick = ()=>{
+$("closeModal").onclick = () => {
 
-const key =
-$("apiKey").value.trim();
-
-if(!key){
-
-$("settingsStatus").textContent =
-"Enter your Gemini API key first.";
-
-$("settingsStatus").className =
-"status error";
-
-return;
-
-}
-
-localStorage.setItem(
-"wmetax_gemini_key",
-key
-);
-
-$("settingsStatus").textContent =
-"Gemini API key saved.";
-
-$("settingsStatus").className =
-"status success";
+  $("modal")
+    .classList
+    .add("hidden");
 
 };
 
 
-$("removeKey").onclick = ()=>{
+$("saveKey").onclick = () => {
 
-localStorage.removeItem(
-"wmetax_gemini_key"
-);
+  const key =
+    $("apiKey")
+      .value
+      .trim();
 
-$("apiKey").value = "";
 
-$("settingsStatus").textContent =
-"Gemini API key removed.";
+  if(!key){
 
-$("settingsStatus").className =
-"status";
+    $("settingsStatus")
+      .textContent =
+      "کلید Gemini را وارد کنید.";
+
+    $("settingsStatus")
+      .className =
+      "status error";
+
+    return;
+
+  }
+
+
+  localStorage.setItem(
+    "wmetax_gemini_key",
+    key
+  );
+
+
+  $("settingsStatus")
+    .textContent =
+    "کلید Gemini ذخیره شد.";
+
+  $("settingsStatus")
+    .className =
+    "status success";
+
+};
+
+
+$("removeKey").onclick = () => {
+
+  localStorage.removeItem(
+    "wmetax_gemini_key"
+  );
+
+  $("apiKey").value =
+    "";
+
+  $("settingsStatus")
+    .textContent =
+    "کلید حذف شد.";
+
+  $("settingsStatus")
+    .className =
+    "status";
 
 };
 
 
 /* =========================================================
-   MEMORY
+   MEMORY EVENTS
 ========================================================= */
 
-$("addMemory").onclick = ()=>{
+$("addMemory").onclick = () => {
 
-const value =
-$("memoryInput")
-.value
-.trim();
+  const value =
+    $("memoryInput")
+      .value
+      .trim();
 
-if(!value)return;
 
-memories.push(value);
+  if(!value)
+    return;
 
-$("memoryInput").value = "";
 
-save();
-renderMemories();
+  memories.push(value);
+
+  $("memoryInput").value =
+    "";
+
+  save();
+
+  renderMemories();
 
 };
 
 
 $("memoryInput")
-.addEventListener(
-"keydown",
-event=>{
+  .addEventListener(
+    "keydown",
+    event => {
 
-if(event.key === "Enter"){
+      if(
+        event.key ===
+        "Enter"
+      ){
 
-event.preventDefault();
+        event.preventDefault();
 
-$("addMemory").click();
+        $("addMemory")
+          .click();
 
-}
+      }
 
-});
+    }
+  );
 
 
 /* =========================================================
-   CHAT CONTROLS
+   CHAT EVENTS
 ========================================================= */
 
-$("chats").onclick = ()=>{
+$("chats").onclick = () => {
 
-$("drawer")
-.classList.remove("hidden");
+  $("drawer")
+    .classList
+    .remove("hidden");
 
-renderChats();
-
-};
-
-
-$("closeDrawer").onclick = ()=>{
-
-$("drawer")
-.classList.add("hidden");
+  renderChats();
 
 };
 
 
-$("newChat").onclick = ()=>{
+$("closeDrawer").onclick = () => {
 
-currentId =
-crypto.randomUUID();
+  $("drawer")
+    .classList
+    .add("hidden");
 
-chats.unshift({
+};
 
-id:currentId,
-title:"New chat",
-pinned:false,
-messages:[]
 
-});
+$("newChat").onclick = () => {
 
-save();
-render();
-renderChats();
+  currentId =
+    crypto.randomUUID();
 
-$("drawer")
-.classList.add("hidden");
+  chats.unshift({
 
-$("input").focus();
+    id:currentId,
+
+    title:"New chat",
+
+    pinned:false,
+
+    messages:[]
+
+  });
+
+  save();
+
+  render();
+
+  renderChats();
+
+  $("drawer")
+    .classList
+    .add("hidden");
+
+  $("input").focus();
 
 };
 
 
 /* =========================================================
-   GEMINI CONTENT
+   BUILD GEMINI HISTORY
 ========================================================= */
 
 function buildContents(){
 
-const chat =
-currentChat();
+  const chat =
+    currentChat();
 
-if(!chat)return [];
 
-return chat.messages
-.slice(-20)
-.map(message=>({
+  if(!chat)
+    return [];
 
-role:
-message.role === "assistant"
-? "model"
-: "user",
 
-parts:[
-{
-text:message.content
-}
-]
+  /*
+    فقط آخرین 20 پیام برای سرعت
+    و کاهش مصرف ارسال می‌شود.
+  */
 
-}));
+  return chat.messages
+    .slice(-20)
+    .map(
+      message => ({
+
+        role:
+          message.role ===
+          "assistant"
+            ? "model"
+            : "user",
+
+        parts:[
+          {
+            text:
+              message.content
+          }
+        ]
+
+      })
+    );
 
 }
 
@@ -958,245 +1285,225 @@ text:message.content
 
 function buildSystemInstruction(){
 
-let text = `
-You are wMetax ai, a helpful, accurate and professional AI assistant.
+  let instruction = `
+You are wMetax ai.
 
-The user's preferred language is Persian unless the user explicitly asks for another language.
+You are a helpful, accurate and professional AI assistant.
 
-Answer clearly and directly.
+The user prefers Persian by default.
 
-Do not claim to have access to systems, files, accounts or information that you do not actually have.
+Answer in Persian unless the user explicitly requests another language.
+
+Be direct, useful and concise.
+
+Do not claim access to files, accounts, systems or information that you do not actually have.
 `;
 
-if(memories.length){
 
-text += `
-User memories:
-`;
+  if(memories.length){
 
-memories.forEach(memory=>{
+    instruction +=
+      "\n\nUser memories:\n";
 
-text += "- " + memory + "\n";
 
-});
+    memories.forEach(
+      memory => {
 
-}
+        instruction +=
+          "- " +
+          memory +
+          "\n";
 
-return {
-parts:[
-{
-text:text.trim()
-}
-]
-};
+      }
+    );
+
+  }
+
+
+  return instruction.trim();
 
 }
 
 
 /* =========================================================
-   GEMINI REQUEST
+   LOW LEVEL GEMINI REQUEST
 ========================================================= */
 
-async function requestGemini(
-apiKey,
-model
+async function geminiRequest(
+  apiKey,
+  attempt = 0
 ){
 
-const endpoint =
-GEMINI_BASE +
-model +
-":generateContent";
+  const response =
+    await fetch(
+      GEMINI_ENDPOINT,
+      {
+
+        method:"POST",
+
+        headers:{
+          "Content-Type":
+            "application/json",
+
+          "x-goog-api-key":
+            apiKey
+        },
+
+        body:
+          JSON.stringify({
+
+            systemInstruction:{
+              parts:[
+                {
+                  text:
+                    buildSystemInstruction()
+                }
+              ]
+            },
+
+            contents:
+              buildContents(),
+
+            generationConfig:{
+
+              temperature:0.7,
+
+              maxOutputTokens:2048
+
+            }
+
+          })
+
+      }
+    );
 
 
-const response =
-await fetch(
-endpoint,
-{
-
-method:"POST",
-
-headers:{
-"Content-Type":"application/json",
-"x-goog-api-key":apiKey
-},
-
-body:
-JSON.stringify({
-
-systemInstruction:
-buildSystemInstruction(),
-
-contents:
-buildContents(),
-
-generationConfig:{
-temperature:0.7,
-maxOutputTokens:2048
-}
-
-})
-
-}
-);
+  let data;
 
 
-let data = null;
+  try{
 
-try{
+    data =
+      await response.json();
 
-data =
-await response.json();
+  }catch{
 
-}catch{
+    throw new Error(
+      "پاسخ نامعتبر از Gemini دریافت شد."
+    );
 
-throw new Error(
-"Gemini returned an invalid response."
-);
-
-}
+  }
 
 
-if(!response.ok){
+  if(response.ok){
 
-const error =
-new Error(
-"Gemini API " +
-response.status +
-": " +
-(
-data?.error?.message ||
-"Unknown error"
-)
-);
-
-error.status =
-response.status;
-
-throw error;
-
-}
+    const parts =
+      data
+        ?.candidates?.[0]
+        ?.content?.parts || [];
 
 
-const parts =
-data
-?.candidates?.[0]
-?.content?.parts || [];
+    const answer =
+      parts
+        .map(
+          part =>
+            part.text || ""
+        )
+        .join("")
+        .trim();
 
 
-const answer =
-parts
-.map(
-part =>
-part.text || ""
-)
-.join("")
-.trim();
+    if(!answer){
+
+      throw new Error(
+        "Gemini پاسخی برنگرداند."
+      );
+
+    }
 
 
-if(!answer){
+    return answer;
 
-throw new Error(
-"Gemini returned no answer."
-);
-
-}
+  }
 
 
-return answer;
+  const status =
+    response.status;
+
+
+  const message =
+    data
+      ?.error
+      ?.message ||
+    "Unknown Gemini error";
+
+
+  /*
+    Temporary server errors.
+    Retry with exponential backoff.
+  */
+
+  if(
+    (
+      status === 429 ||
+      status === 500 ||
+      status === 502 ||
+      status === 503 ||
+      status === 504
+    ) &&
+    attempt < 3
+  ){
+
+    const delay =
+      900 *
+      Math.pow(
+        2,
+        attempt
+      ) +
+      Math.random() * 500;
+
+
+    await new Promise(
+      resolve =>
+        setTimeout(
+          resolve,
+          delay
+        )
+    );
+
+
+    return geminiRequest(
+      apiKey,
+      attempt + 1
+    );
+
+  }
+
+
+  throw new Error(
+    "Gemini API " +
+    status +
+    ": " +
+    message
+  );
 
 }
 
 
 /* =========================================================
-   AUTO FALLBACK
+   GEMINI CONNECTION
 ========================================================= */
 
 async function askGemini(apiKey){
 
-let modelsToTry;
+  /*
+    برای Auto و Gemini هر دو
+    از مدل واقعی رسمی استفاده می‌کنیم.
+  */
 
-
-if(selectedModel === "Gemini"){
-
-modelsToTry = [
-"gemini-3.5-flash-lite",
-"gemini-3.1-flash-lite",
-"gemini-3.5-flash"
-];
-
-}else{
-
-modelsToTry =
-GEMINI_MODELS;
-
-}
-
-
-let lastError = null;
-
-
-for(
-let i = 0;
-i < modelsToTry.length;
-i++
-){
-
-const model =
-modelsToTry[i];
-
-try{
-
-return await requestGemini(
-apiKey,
-model
-);
-
-}catch(error){
-
-lastError = error;
-
-
-/*
-  Only retry on temporary
-  server/rate-limit errors.
-*/
-
-if(
-error.status !== 429 &&
-error.status !== 500 &&
-error.status !== 502 &&
-error.status !== 503 &&
-error.status !== 504
-){
-
-throw error;
-
-}
-
-
-/*
-  Small delay before trying
-  the next model.
-*/
-
-if(i < modelsToTry.length - 1){
-
-await new Promise(
-resolve =>
-setTimeout(resolve,500)
-);
-
-}
-
-}
-
-}
-
-
-throw lastError ||
-new Error(
-"All Gemini models are temporarily unavailable."
-);
+  return await geminiRequest(
+    apiKey
+  );
 
 }
 
@@ -1207,175 +1514,239 @@ new Error(
 
 async function send(){
 
-const input =
-$("input");
-
-const text =
-input.value.trim();
-
-if(!text)return;
+  const input =
+    $("input");
 
 
-const apiKey =
-getApiKey();
+  const text =
+    input
+      .value
+      .trim();
 
 
-if(!apiKey){
-
-$("modal")
-.classList.remove("hidden");
-
-$("apiKey").focus();
-
-$("settingsStatus").textContent =
-"Enter your Gemini API Key first.";
-
-$("settingsStatus").className =
-"status error";
-
-return;
-
-}
+  if(!text)
+    return;
 
 
-ensureChat();
-
-const chat =
-currentChat();
+  const apiKey =
+    getApiKey();
 
 
-chat.messages.push({
+  if(!apiKey){
 
-role:"user",
-content:text
+    $("modal")
+      .classList
+      .remove("hidden");
 
-});
+    $("apiKey").focus();
 
+    $("settingsStatus")
+      .textContent =
+      "ابتدا Gemini API Key را وارد کنید.";
 
-if(chat.title === "New chat"){
+    $("settingsStatus")
+      .className =
+      "status error";
 
-chat.title =
-text.slice(0,50);
+    return;
 
-}
-
-input.value = "";
-
-render();
-save();
-
-$("send").disabled =
-true;
+  }
 
 
-const typing =
-document.createElement("div");
-
-typing.className =
-"bubble ai typing";
-
-typing.textContent =
-"Thinking…";
-
-$("messages")
-.appendChild(typing);
-
-$("messages")
-.scrollTop =
-$("messages").scrollHeight;
+  ensureChat();
 
 
-try{
-
-const answer =
-await askGemini(apiKey);
+  const chat =
+    currentChat();
 
 
-chat.messages.push({
+  chat.messages.push({
 
-role:"assistant",
-content:answer
+    role:"user",
 
-});
+    content:text
 
-save();
-render();
+  });
 
 
-}catch(error){
+  if(
+    chat.title ===
+    "New chat"
+  ){
 
-console.error(
-"wMetax Gemini:",
-error
-);
+    chat.title =
+      text.slice(0,50);
+
+  }
 
 
-chat.messages.push({
+  input.value =
+    "";
 
-role:"assistant",
+  render();
 
-content:
-"خطا در اتصال به Gemini:\n\n" +
-error.message
+  save();
 
-});
 
-save();
-render();
+  $("send")
+    .disabled =
+    true;
 
-}finally{
 
-$("send").disabled =
-false;
+  const typing =
+    document.createElement("div");
 
-$("input").focus();
+  typing.className =
+    "bubble ai typing";
 
-}
+  typing.textContent =
+    "در حال فکر کردن…";
+
+
+  $("messages")
+    .appendChild(typing);
+
+
+  $("messages")
+    .scrollTop =
+    $("messages")
+    .scrollHeight;
+
+
+  try{
+
+    const answer =
+      await askGemini(
+        apiKey
+      );
+
+
+    chat.messages.push({
+
+      role:"assistant",
+
+      content:answer
+
+    });
+
+
+    save();
+
+    render();
+
+
+  }catch(error){
+
+    console.error(
+      "wMetax Gemini:",
+      error
+    );
+
+
+    let message =
+      error?.message ||
+      "خطای ناشناخته";
+
+
+    /*
+      Failed to fetch means the browser
+      did not receive an HTTP response.
+    */
+
+    if(
+      message ===
+      "Failed to fetch"
+    ){
+
+      message =
+        "مرورگر نتوانست به سرور Gemini وصل شود.\n\n" +
+        "احتمالاً اتصال شبکه، VPN/Proxy، افزونه مرورگر یا محدودیت دسترسی به Google API باعث این خطا شده است.\n\n" +
+        "اگر سایت با HTTPS باز شده، صفحه را یک‌بار Refresh کنید و دوباره امتحان کنید.";
+
+    }
+
+
+    chat.messages.push({
+
+      role:"assistant",
+
+      content:
+        "خطا در اتصال به Gemini:\n\n" +
+        message
+
+    });
+
+
+    save();
+
+    render();
+
+
+  }finally{
+
+    $("send")
+      .disabled =
+      false;
+
+    $("input")
+      .focus();
+
+  }
 
 }
 
 
 /* =========================================================
-   EVENTS
+   SEND EVENTS
 ========================================================= */
 
 $("send").onclick =
-send;
+  send;
 
 
 $("input")
-.addEventListener(
-"keydown",
-event=>{
+  .addEventListener(
+    "keydown",
+    event => {
 
-if(
-event.key === "Enter" &&
-!event.shiftKey
-){
+      if(
+        event.key ===
+        "Enter" &&
+        !event.shiftKey
+      ){
 
-event.preventDefault();
+        event.preventDefault();
 
-send();
+        send();
 
-}
+      }
 
-});
+    }
+  );
 
+
+/* =========================================================
+   CLOSE MODEL MENU
+========================================================= */
 
 document.addEventListener(
-"click",
-event=>{
+  "click",
+  event => {
 
-if(
-!event.target.closest(".model")
-){
+    if(
+      !event.target.closest(
+        ".model"
+      )
+    ){
 
-$("modelMenu")
-.classList.add("hidden");
+      $("modelMenu")
+        .classList
+        .add("hidden");
 
-}
+    }
 
-});
+  }
+);
 
 
 /* =========================================================
@@ -1383,6 +1754,7 @@ $("modelMenu")
 ========================================================= */
 
 ensureChat();
+
 render();
 
 </script>
