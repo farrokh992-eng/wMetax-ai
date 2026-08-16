@@ -93,7 +93,7 @@ button,input,textarea{font:inherit}
   border-radius:14px;
   padding:10px 15px;
   font-size:15px;
-  min-width:160px;
+  min-width:150px;
   cursor:pointer
 }
 
@@ -102,7 +102,7 @@ button,input,textarea{font:inherit}
   top:48px;
   left:50%;
   transform:translateX(-50%);
-  width:250px;
+  width:245px;
   background:#17181d;
   border:1px solid #292a31;
   border-radius:16px;
@@ -341,12 +341,21 @@ button,input,textarea{font:inherit}
 .status{
   min-height:18px;
   margin-top:8px;
-  font-size:12px
+  font-size:12px;
+  line-height:1.5
 }
 
 .danger{
   background:#2a1719;
   color:#ffb5b8
+}
+
+.success{
+  color:#9ee6ae
+}
+
+.error{
+  color:#ff9da3
 }
 </style>
 </head>
@@ -369,7 +378,6 @@ button,input,textarea{font:inherit}
 
 </header>
 
-
 <div class="modelbar">
 
 <div class="model">
@@ -382,9 +390,7 @@ button,input,textarea{font:inherit}
 
 </div>
 
-
 <main class="messages" id="messages"></main>
-
 
 <div class="composer">
 
@@ -424,7 +430,7 @@ autocomplete="off"
 </div>
 
 
-<!-- SETTINGS / MEMORY -->
+<!-- SETTINGS -->
 
 <div class="modal hidden" id="modal">
 
@@ -456,9 +462,8 @@ Remove API Key
 </button>
 
 <p class="help">
-Your Gemini API key is stored only in this browser's local storage
-for this private demo. Do not use this approach for a public
-production application.
+The key is stored only in this browser's local storage.
+This is suitable for a private demo, not a public production app.
 </p>
 
 <hr style="border-color:#24252b;margin:22px 0">
@@ -466,8 +471,7 @@ production application.
 <h3>Memory</h3>
 
 <p class="help">
-Memories are stored locally and included as context when
-you chat with Gemini.
+Memories are stored locally and sent as context to Gemini.
 </p>
 
 <div id="memoryList"></div>
@@ -494,51 +498,52 @@ Save
 
 <script>
 
-/* =========================
-   GEMINI CONFIGURATION
-========================= */
+/* =========================================================
+   GEMINI
+========================================================= */
 
-const GEMINI_API_BASE =
-"https://generativelanguage.googleapis.com/v1beta/models/";
-
-const GEMINI_MODEL =
-"gemini-2.5-flash";
+const GEMINI_ENDPOINT =
+"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
 
 
-/* =========================
+/* =========================================================
    MODELS
-========================= */
+========================================================= */
 
 const MODELS = [
 
 {
 name:"Auto",
-id:"auto"
+id:"auto",
+description:"Gemini"
 },
 
 {
 name:"Gemini",
-id:GEMINI_MODEL
+id:"gemini-2.5-flash",
+description:"Gemini 2.5 Flash"
 }
 
 ];
 
 
-/* =========================
+/* =========================================================
    STORAGE
-========================= */
+========================================================= */
 
 let selectedModel =
 localStorage.getItem("wmetax_model") || "Auto";
 
 let chats =
-JSON.parse(
-localStorage.getItem("wmetax_chats") || "[]"
+safeJSON(
+localStorage.getItem("wmetax_chats"),
+[]
 );
 
 let memories =
-JSON.parse(
-localStorage.getItem("wmetax_memories") || "[]"
+safeJSON(
+localStorage.getItem("wmetax_memories"),
+[]
 );
 
 let currentId =
@@ -549,9 +554,30 @@ const $ =
 id => document.getElementById(id);
 
 
-/* =========================
-   STORAGE HELPERS
-========================= */
+/* =========================================================
+   SAFE JSON
+========================================================= */
+
+function safeJSON(value,fallback){
+
+try{
+
+return value
+? JSON.parse(value)
+: fallback;
+
+}catch{
+
+return fallback;
+
+}
+
+}
+
+
+/* =========================================================
+   STORAGE
+========================================================= */
 
 function save(){
 
@@ -586,9 +612,9 @@ return localStorage.getItem(
 }
 
 
-/* =========================
+/* =========================================================
    CHAT
-========================= */
+========================================================= */
 
 function currentChat(){
 
@@ -625,9 +651,9 @@ save();
 }
 
 
-/* =========================
-   RENDER CHAT
-========================= */
+/* =========================================================
+   RENDER
+========================================================= */
 
 function render(){
 
@@ -677,16 +703,15 @@ box.appendChild(bubble);
 
 });
 
-
 box.scrollTop =
 box.scrollHeight;
 
 }
 
 
-/* =========================
+/* =========================================================
    CHAT LIST
-========================= */
+========================================================= */
 
 function renderChats(){
 
@@ -765,7 +790,8 @@ renderChats();
 const del =
 document.createElement("button");
 
-del.textContent = "×";
+del.textContent =
+"×";
 
 del.title =
 "Delete chat";
@@ -810,9 +836,9 @@ box.appendChild(row);
 }
 
 
-/* =========================
+/* =========================================================
    MEMORY
-========================= */
+========================================================= */
 
 function renderMemories(){
 
@@ -862,9 +888,9 @@ box.appendChild(item);
 }
 
 
-/* =========================
+/* =========================================================
    MODEL MENU
-========================= */
+========================================================= */
 
 MODELS.forEach(
 model=>{
@@ -877,13 +903,7 @@ item.className =
 
 item.innerHTML = `
 <span>${model.name}</span>
-<small>
-${
-model.name === "Auto"
-? "Gemini"
-: model.id
-}
-</small>
+<small>${model.description}</small>
 `;
 
 item.onclick = () => {
@@ -924,16 +944,20 @@ $("modelMenu")
 };
 
 
-/* =========================
+/* =========================================================
    SETTINGS
-========================= */
+========================================================= */
 
 $("settings").onclick = () => {
 
 $("apiKey").value =
 getApiKey();
 
-$("settingsStatus").textContent = "";
+$("settingsStatus").textContent =
+"";
+
+$("settingsStatus").className =
+"status";
 
 $("modal")
 .classList.remove("hidden");
@@ -961,15 +985,12 @@ if(!key){
 $("settingsStatus").textContent =
 "Enter your Gemini API key first.";
 
+$("settingsStatus").className =
+"status error";
+
 return;
 
 }
-
-
-/*
-   Do NOT validate the exact Gemini key format.
-   Google may change key formats.
-*/
 
 localStorage.setItem(
 "wmetax_gemini_key",
@@ -978,6 +999,9 @@ key
 
 $("settingsStatus").textContent =
 "Gemini API key saved on this device.";
+
+$("settingsStatus").className =
+"status success";
 
 };
 
@@ -993,12 +1017,15 @@ $("apiKey").value = "";
 $("settingsStatus").textContent =
 "Gemini API key removed.";
 
+$("settingsStatus").className =
+"status";
+
 };
 
 
-/* =========================
+/* =========================================================
    MEMORY
-========================= */
+========================================================= */
 
 $("addMemory").onclick = () => {
 
@@ -1039,16 +1066,14 @@ $("addMemory").click();
 });
 
 
-/* =========================
+/* =========================================================
    CHATS
-========================= */
+========================================================= */
 
 $("chats").onclick = () => {
 
 $("drawer")
-.classList.remove(
-"hidden"
-);
+.classList.remove("hidden");
 
 renderChats();
 
@@ -1058,9 +1083,7 @@ renderChats();
 $("closeDrawer").onclick = () => {
 
 $("drawer")
-.classList.add(
-"hidden"
-);
+.classList.add("hidden");
 
 };
 
@@ -1089,20 +1112,18 @@ render();
 renderChats();
 
 $("drawer")
-.classList.add(
-"hidden"
-);
+.classList.add("hidden");
 
 $("input").focus();
 
 };
 
 
-/* =========================
-   GEMINI CONTENT BUILDER
-========================= */
+/* =========================================================
+   GEMINI CONTENTS
+========================================================= */
 
-function buildGeminiContents(){
+function buildContents(){
 
 const chat =
 currentChat();
@@ -1131,31 +1152,36 @@ text:message.content
 }
 
 
-/* =========================
-   GEMINI SYSTEM INSTRUCTION
-========================= */
+/* =========================================================
+   SYSTEM INSTRUCTION + MEMORY
+========================================================= */
 
 function buildSystemInstruction(){
 
-let system =
-`You are wMetax ai, a helpful, accurate and professional AI assistant.
+let text = `
+You are wMetax ai, a helpful, accurate and professional AI assistant.
 
-Answer the user clearly and directly.
+The user's preferred language is Persian unless the user explicitly asks for another language.
 
-The user's preferred language is Persian unless they explicitly request another language.
+Answer clearly and directly.
 
-Do not claim to have access to information, files, accounts or systems that you do not actually have access to.`;
+Do not claim access to systems, files, accounts or information that you do not actually have.
+`;
 
 
 if(memories.length){
 
-system +=
-`\n\nUser memories that may help you answer:
+text += `
 
-` +
-memories
-.map(x => "- " + x)
-.join("\n");
+User memories:
+`;
+
+memories.forEach(memory=>{
+
+text +=
+"- " + memory + "\n";
+
+});
 
 }
 
@@ -1163,7 +1189,7 @@ memories
 return {
 parts:[
 {
-text:system
+text:text.trim()
 }
 ]
 };
@@ -1171,31 +1197,31 @@ text:system
 }
 
 
-/* =========================
+/* =========================================================
    GEMINI REQUEST
-========================= */
+========================================================= */
 
-async function callGemini(apiKey){
+async function askGemini(apiKey){
 
-const model =
-selectedModel === "Auto"
-? GEMINI_MODEL
-: GEMINI_MODEL;
+const contents =
+buildContents();
 
 
-const url =
-GEMINI_API_BASE +
-model +
-":generateContent";
+if(!contents.length){
+
+throw new Error(
+"No conversation content was created."
+);
+
+}
 
 
-const body = {
+const requestBody = {
 
 systemInstruction:
 buildSystemInstruction(),
 
-contents:
-buildGeminiContents(),
+contents:contents,
 
 generationConfig:{
 temperature:0.7,
@@ -1205,9 +1231,14 @@ maxOutputTokens:4096
 };
 
 
-const response =
+let response;
+
+
+try{
+
+response =
 await fetch(
-url,
+GEMINI_ENDPOINT,
 {
 
 method:"POST",
@@ -1223,79 +1254,94 @@ apiKey
 },
 
 body:
-JSON.stringify(body)
-
-});
-
-
-if(!response.ok){
-
-let errorMessage =
-"Gemini API error.";
-
-try{
-
-const errorData =
-await response.json();
-
-errorMessage =
-errorData
-?.error
-?.message ||
-errorMessage;
-
-}catch{
-
-try{
-
-errorMessage =
-await response.text();
-
-}catch{}
+JSON.stringify(requestBody)
 
 }
+);
+
+}catch(networkError){
 
 throw new Error(
-"Gemini API " +
-response.status +
-": " +
-errorMessage
+"Network/CORS error. The browser could not reach Gemini. " +
+"Check your internet connection, browser extensions, VPN/proxy, " +
+"or whether this page is being served over HTTP/HTTPS."
 );
 
 }
 
 
-const data =
+let data = null;
+
+try{
+
+data =
 await response.json();
+
+}catch{
+
+data = null;
+
+}
+
+
+if(!response.ok){
+
+const message =
+data
+?.error
+?.message ||
+"Unknown Gemini API error.";
+
+throw new Error(
+"Gemini API " +
+response.status +
+": " +
+message
+);
+
+}
+
+
+const candidate =
+data?.candidates?.[0];
+
+
+if(!candidate){
+
+throw new Error(
+"Gemini returned no candidate."
+);
+
+}
 
 
 const parts =
-data
-?.candidates
-?.[0]
+candidate
 ?.content
 ?.parts || [];
 
 
 const answer =
 parts
-.map(part => part.text || "")
+.map(part =>
+typeof part.text === "string"
+? part.text
+: ""
+)
 .join("")
 .trim();
 
 
 if(!answer){
 
-const finishReason =
-data
-?.candidates
-?.[0]
-?.finishReason;
-
 throw new Error(
-finishReason
-? "Gemini returned no text. Finish reason: " + finishReason
-: "Gemini returned no answer."
+"Gemini returned no text. " +
+(
+candidate.finishReason
+? "Finish reason: " +
+candidate.finishReason
+: ""
+)
 );
 
 }
@@ -1306,9 +1352,9 @@ return answer;
 }
 
 
-/* =========================
+/* =========================================================
    SEND
-========================= */
+========================================================= */
 
 async function send(){
 
@@ -1329,14 +1375,15 @@ getApiKey();
 if(!apiKey){
 
 $("modal")
-.classList.remove(
-"hidden"
-);
+.classList.remove("hidden");
 
 $("apiKey").focus();
 
 $("settingsStatus").textContent =
 "Enter your Gemini API Key first.";
+
+$("settingsStatus").className =
+"status error";
 
 return;
 
@@ -1363,8 +1410,7 @@ chat.title === "New chat"
 ){
 
 chat.title =
-text
-.slice(0,50);
+text.slice(0,50);
 
 }
 
@@ -1375,10 +1421,9 @@ render();
 save();
 
 
-$("send").disabled = true;
+$("send").disabled =
+true;
 
-
-/* TYPING */
 
 const typing =
 document.createElement("div");
@@ -1400,7 +1445,7 @@ $("messages").scrollHeight;
 try{
 
 const answer =
-await callGemini(apiKey);
+await askGemini(apiKey);
 
 
 chat.messages.push({
@@ -1419,7 +1464,7 @@ render();
 }catch(error){
 
 console.error(
-"Gemini error:",
+"wMetax Gemini error:",
 error
 );
 
@@ -1438,7 +1483,6 @@ save();
 
 render();
 
-
 }finally{
 
 $("send").disabled =
@@ -1451,9 +1495,9 @@ $("input").focus();
 }
 
 
-/* =========================
+/* =========================================================
    SEND EVENTS
-========================= */
+========================================================= */
 
 $("send").onclick =
 send;
@@ -1478,9 +1522,9 @@ send();
 });
 
 
-/* =========================
-   CLOSE MENUS
-========================= */
+/* =========================================================
+   CLOSE MODEL MENU
+========================================================= */
 
 document.addEventListener(
 "click",
@@ -1491,18 +1535,16 @@ if(
 ){
 
 $("modelMenu")
-.classList.add(
-"hidden"
-);
+.classList.add("hidden");
 
 }
 
 });
 
 
-/* =========================
+/* =========================================================
    INITIALIZE
-========================= */
+========================================================= */
 
 ensureChat();
 
