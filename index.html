@@ -8,355 +8,324 @@
 
 <style>
 *{box-sizing:border-box}
-
-html,body{
-  margin:0;
-  height:100%;
-  background:#050507;
-  color:#f4f4f6;
-  font-family:system-ui,-apple-system,"Segoe UI",sans-serif
-}
-
+html,body{margin:0;height:100%;background:#050507;color:#f4f4f6;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
 body{overflow:hidden}
-
 button,input,textarea{font:inherit}
 
 .app{
-  height:100dvh;
-  max-width:900px;
-  margin:auto;
-  display:flex;
-  flex-direction:column
+height:100dvh;
+max-width:900px;
+margin:auto;
+display:flex;
+flex-direction:column
 }
 
 .top{
-  height:62px;
-  display:flex;
-  align-items:center;
-  padding:0 16px
+height:62px;
+display:flex;
+align-items:center;
+padding:0 16px
 }
 
 .brand{
-  display:flex;
-  align-items:center;
-  gap:10px
+display:flex;
+align-items:center;
+gap:10px
 }
 
 .brand img{
-  width:36px;
-  height:36px;
-  border-radius:10px;
-  object-fit:cover
+width:36px;
+height:36px;
+border-radius:10px;
+object-fit:cover
 }
 
 .logo{
-  font-size:25px;
-  font-weight:750
+font-size:25px;
+font-weight:750
 }
 
 .logo span{
-  font-weight:450;
-  color:#8d8e96
+font-weight:450;
+color:#8d8e96
 }
 
 .actions{
-  margin-left:auto;
-  display:flex;
-  gap:5px
+margin-left:auto;
+display:flex;
+gap:5px
 }
 
 .icon{
-  width:40px;
-  height:40px;
-  border:0;
-  border-radius:13px;
-  background:#15161b;
-  color:#ddd;
-  font-size:20px;
-  cursor:pointer
+width:40px;
+height:40px;
+border:0;
+border-radius:13px;
+background:#15161b;
+color:#ddd;
+font-size:20px;
+cursor:pointer
 }
 
 .modelbar{
-  display:flex;
-  justify-content:center;
-  padding:2px 16px 8px
+display:flex;
+justify-content:center;
+padding:2px 16px 8px
 }
 
-.model{
-  position:relative
-}
+.model{position:relative}
 
 .model>button{
-  border:0;
-  background:#17181d;
-  color:#eee;
-  border-radius:14px;
-  padding:10px 15px;
-  font-size:15px;
-  min-width:150px;
-  cursor:pointer
+border:0;
+background:#17181d;
+color:#eee;
+border-radius:14px;
+padding:10px 15px;
+font-size:15px;
+min-width:160px;
+cursor:pointer
 }
 
 .menu{
-  position:absolute;
-  top:48px;
-  left:50%;
-  transform:translateX(-50%);
-  width:245px;
-  background:#17181d;
-  border:1px solid #292a31;
-  border-radius:16px;
-  padding:7px;
-  z-index:30;
-  box-shadow:0 18px 50px #0009
+position:absolute;
+top:48px;
+left:50%;
+transform:translateX(-50%);
+width:250px;
+background:#17181d;
+border:1px solid #292a31;
+border-radius:16px;
+padding:7px;
+z-index:30;
+box-shadow:0 18px 50px #0009
 }
 
-.hidden{
-  display:none!important
-}
+.hidden{display:none!important}
 
 .item{
-  padding:11px 12px;
-  border-radius:11px;
-  cursor:pointer;
-  display:flex;
-  justify-content:space-between
+padding:11px 12px;
+border-radius:11px;
+cursor:pointer;
+display:flex;
+justify-content:space-between
 }
 
-.item:hover{
-  background:#24252b
-}
-
-.item small{
-  color:#85858d
-}
+.item:hover{background:#24252b}
+.item small{color:#85858d}
 
 .messages{
-  flex:1;
-  overflow:auto;
-  padding:10px 16px 120px;
-  display:flex;
-  flex-direction:column;
-  gap:10px
+flex:1;
+overflow:auto;
+padding:10px 16px 120px;
+display:flex;
+flex-direction:column;
+gap:10px
 }
 
 .empty{
-  margin:auto;
-  text-align:center;
-  color:#8c8d95
+margin:auto;
+text-align:center;
+color:#8c8d95
 }
 
 .empty b{
-  display:block;
-  color:#eee;
-  font-size:28px;
-  margin-bottom:8px
+display:block;
+color:#eee;
+font-size:28px;
+margin-bottom:8px
 }
 
 .bubble{
-  max-width:82%;
-  padding:12px 14px;
-  border-radius:17px;
-  line-height:1.6;
-  font-size:15px;
-  white-space:pre-wrap;
-  overflow-wrap:anywhere
+max-width:82%;
+padding:12px 14px;
+border-radius:17px;
+line-height:1.6;
+font-size:15px;
+white-space:pre-wrap;
+overflow-wrap:anywhere
 }
 
 .user{
-  align-self:flex-end;
-  background:#2a2c34
+align-self:flex-end;
+background:#2a2c34
 }
 
 .ai{
-  align-self:flex-start;
-  background:#15161b
+align-self:flex-start;
+background:#15161b
 }
 
-.typing{
-  opacity:.65
-}
+.typing{opacity:.65}
 
 .composer{
-  position:fixed;
-  left:50%;
-  transform:translateX(-50%);
-  bottom:0;
-  width:min(900px,100%);
-  padding:10px 16px calc(10px + env(safe-area-inset-bottom));
-  background:linear-gradient(transparent,#050507 25%);
-  display:flex;
-  gap:8px
+position:fixed;
+left:50%;
+transform:translateX(-50%);
+bottom:0;
+width:min(900px,100%);
+padding:10px 16px calc(10px + env(safe-area-inset-bottom));
+background:linear-gradient(transparent,#050507 25%);
+display:flex;
+gap:8px
 }
 
 .input{
-  flex:1;
-  min-height:52px;
-  max-height:140px;
-  resize:none;
-  border:0;
-  outline:0;
-  border-radius:18px;
-  background:#17181d;
-  color:#fff;
-  padding:15px
+flex:1;
+min-height:52px;
+max-height:140px;
+resize:none;
+border:0;
+outline:0;
+border-radius:18px;
+background:#17181d;
+color:#fff;
+padding:15px
 }
 
 .send{
-  width:52px;
-  height:52px;
-  border:0;
-  border-radius:17px;
-  background:#f1f1f3;
-  color:#08080a;
-  font-size:22px;
-  cursor:pointer
+width:52px;
+height:52px;
+border:0;
+border-radius:17px;
+background:#f1f1f3;
+color:#08080a;
+font-size:22px;
+cursor:pointer
 }
 
 .send:disabled{
-  opacity:.5;
-  cursor:default
+opacity:.5;
+cursor:default
 }
 
-.drawer,
-.modal{
-  position:fixed;
-  inset:0;
-  background:#0008;
-  z-index:50
+.drawer,.modal{
+position:fixed;
+inset:0;
+background:#0008;
+z-index:50
 }
 
 .panel{
-  height:100%;
-  width:min(350px,88%);
-  background:#101116;
-  padding:20px;
-  box-shadow:20px 0 60px #0008;
-  overflow:auto
+height:100%;
+width:min(350px,88%);
+background:#101116;
+padding:20px;
+box-shadow:20px 0 60px #0008;
+overflow:auto
 }
 
 .modal .panel{
-  height:auto;
-  max-height:85%;
-  margin:8vh auto;
-  border-radius:20px;
-  width:min(440px,92%)
+height:auto;
+max-height:85%;
+margin:8vh auto;
+border-radius:20px;
+width:min(440px,92%)
 }
 
-.close{
-  float:right
-}
+.close{float:right}
 
 .chatrow{
-  padding:12px;
-  border-radius:12px;
-  background:#18191f;
-  margin-bottom:8px;
-  display:flex;
-  gap:8px;
-  align-items:center
+padding:12px;
+border-radius:12px;
+background:#18191f;
+margin-bottom:8px;
+display:flex;
+gap:8px;
+align-items:center
 }
 
 .chatrow button{
-  background:none;
-  border:0;
-  color:#bbb;
-  cursor:pointer;
-  font-size:18px
+background:none;
+border:0;
+color:#bbb;
+cursor:pointer;
+font-size:18px
 }
 
 .chatname{
-  flex:1;
-  cursor:pointer;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap
+flex:1;
+cursor:pointer;
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap
 }
 
 .memory{
-  padding:12px;
-  border-radius:12px;
-  background:#18191f;
-  margin:8px 0
+padding:12px;
+border-radius:12px;
+background:#18191f;
+margin:8px 0
 }
 
 .memory button{
-  float:right;
-  background:none;
-  border:0;
-  color:#aaa;
-  cursor:pointer
+float:right;
+background:none;
+border:0;
+color:#aaa;
+cursor:pointer
 }
 
 .addmem{
-  display:flex;
-  gap:8px;
-  margin-top:12px
+display:flex;
+gap:8px;
+margin-top:12px
 }
 
 .addmem input{
-  flex:1;
-  background:#18191f;
-  color:#fff;
-  border:1px solid #292a31;
-  border-radius:10px;
-  padding:10px
+flex:1;
+background:#18191f;
+color:#fff;
+border:1px solid #292a31;
+border-radius:10px;
+padding:10px
 }
 
-.addmem button,
-.primary{
-  border:0;
-  border-radius:10px;
-  padding:10px 14px;
-  cursor:pointer
+.addmem button,.primary{
+border:0;
+border-radius:10px;
+padding:10px 14px;
+cursor:pointer
 }
 
-.field{
-  margin:18px 0
-}
+.field{margin:18px 0}
 
 .field label{
-  display:block;
-  color:#aaa;
-  font-size:13px;
-  margin-bottom:7px
+display:block;
+color:#aaa;
+font-size:13px;
+margin-bottom:7px
 }
 
 .field input{
-  width:100%;
-  background:#18191f;
-  color:#fff;
-  border:1px solid #292a31;
-  border-radius:11px;
-  padding:12px;
-  outline:none
+width:100%;
+background:#18191f;
+color:#fff;
+border:1px solid #292a31;
+border-radius:11px;
+padding:12px;
+outline:none
 }
 
 .help{
-  color:#777;
-  font-size:12px;
-  line-height:1.6
+color:#777;
+font-size:12px;
+line-height:1.6
 }
 
 .status{
-  min-height:18px;
-  margin-top:8px;
-  font-size:12px;
-  line-height:1.5
+min-height:18px;
+margin-top:8px;
+font-size:12px;
+line-height:1.5
 }
 
 .danger{
-  background:#2a1719;
-  color:#ffb5b8
+background:#2a1719;
+color:#ffb5b8
 }
 
-.success{
-  color:#9ee6ae
-}
-
-.error{
-  color:#ff9da3
-}
+.success{color:#9ee6ae}
+.error{color:#ff9da3}
 </style>
 </head>
 
@@ -409,8 +378,6 @@ autocomplete="off"
 </div>
 
 
-<!-- CHAT DRAWER -->
-
 <div class="drawer hidden" id="drawer">
 
 <div class="panel">
@@ -429,8 +396,6 @@ autocomplete="off"
 
 </div>
 
-
-<!-- SETTINGS -->
 
 <div class="modal hidden" id="modal">
 
@@ -462,7 +427,7 @@ Remove API Key
 </button>
 
 <p class="help">
-The key is stored only in this browser's local storage.
+The API key is stored only in this browser's local storage.
 This is suitable for a private demo, not a public production app.
 </p>
 
@@ -478,14 +443,9 @@ Memories are stored locally and sent as context to Gemini.
 
 <div class="addmem">
 
-<input
-id="memoryInput"
-placeholder="Add a memory…"
->
+<input id="memoryInput" placeholder="Add a memory…">
 
-<button id="addMemory">
-Save
-</button>
+<button id="addMemory">Save</button>
 
 </div>
 
@@ -502,8 +462,12 @@ Save
    GEMINI
 ========================================================= */
 
+const GEMINI_MODEL = "gemini-3.7-flash";
+
 const GEMINI_ENDPOINT =
-"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+"https://generativelanguage.googleapis.com/v1beta/models/" +
+GEMINI_MODEL +
+":generateContent";
 
 
 /* =========================================================
@@ -520,8 +484,8 @@ description:"Gemini"
 
 {
 name:"Gemini",
-id:"gemini-2.5-flash",
-description:"Gemini 2.5 Flash"
+id:GEMINI_MODEL,
+description:"Gemini 3.7 Flash"
 }
 
 ];
@@ -530,6 +494,18 @@ description:"Gemini 2.5 Flash"
 /* =========================================================
    STORAGE
 ========================================================= */
+
+const $ = id => document.getElementById(id);
+
+function safeJSON(value,fallback){
+
+try{
+return value ? JSON.parse(value) : fallback;
+}catch{
+return fallback;
+}
+
+}
 
 let selectedModel =
 localStorage.getItem("wmetax_model") || "Auto";
@@ -550,33 +526,8 @@ let currentId =
 localStorage.getItem("wmetax_current") || null;
 
 
-const $ =
-id => document.getElementById(id);
-
-
 /* =========================================================
-   SAFE JSON
-========================================================= */
-
-function safeJSON(value,fallback){
-
-try{
-
-return value
-? JSON.parse(value)
-: fallback;
-
-}catch{
-
-return fallback;
-
-}
-
-}
-
-
-/* =========================================================
-   STORAGE
+   SAVE
 ========================================================= */
 
 function save(){
@@ -592,16 +543,13 @@ JSON.stringify(memories)
 );
 
 if(currentId){
-
 localStorage.setItem(
 "wmetax_current",
 currentId
 );
-
 }
 
 }
-
 
 function getApiKey(){
 
@@ -624,7 +572,6 @@ chat => chat.id === currentId
 
 }
 
-
 function ensureChat(){
 
 if(!currentChat()){
@@ -635,11 +582,8 @@ crypto.randomUUID();
 chats.unshift({
 
 id:currentId,
-
 title:"New chat",
-
 pinned:false,
-
 messages:[]
 
 });
@@ -657,18 +601,13 @@ save();
 
 function render(){
 
-const chat =
-currentChat();
+const chat = currentChat();
 
-const box =
-$("messages");
+const box = $("messages");
 
 box.innerHTML = "";
 
-if(
-!chat ||
-chat.messages.length === 0
-){
+if(!chat || chat.messages.length === 0){
 
 box.innerHTML = `
 <div class="empty">
@@ -681,9 +620,7 @@ return;
 
 }
 
-
-chat.messages.forEach(
-message => {
+chat.messages.forEach(message=>{
 
 const bubble =
 document.createElement("div");
@@ -710,19 +647,16 @@ box.scrollHeight;
 
 
 /* =========================================================
-   CHAT LIST
+   CHATS
 ========================================================= */
 
 function renderChats(){
 
-const box =
-$("chatList");
+const box = $("chatList");
 
 box.innerHTML = "";
 
-[
-...chats
-]
+[...chats]
 .sort(
 (a,b)=>
 Number(b.pinned) -
@@ -736,7 +670,6 @@ document.createElement("div");
 row.className =
 "chatrow";
 
-
 const name =
 document.createElement("div");
 
@@ -747,15 +680,12 @@ name.textContent =
 (chat.pinned ? "📌 " : "") +
 chat.title;
 
-name.onclick = () => {
+name.onclick = ()=>{
 
-currentId =
-chat.id;
+currentId = chat.id;
 
 save();
-
 render();
-
 renderChats();
 
 $("drawer")
@@ -763,49 +693,35 @@ $("drawer")
 
 };
 
-
 const pin =
 document.createElement("button");
 
 pin.textContent =
 chat.pinned ? "📌" : "📍";
 
-pin.title =
-chat.pinned
-? "Unpin chat"
-: "Pin chat";
-
-pin.onclick = () => {
+pin.onclick = ()=>{
 
 chat.pinned =
 !chat.pinned;
 
 save();
-
 renderChats();
 
 };
 
-
 const del =
 document.createElement("button");
 
-del.textContent =
-"×";
+del.textContent = "×";
 
-del.title =
-"Delete chat";
-
-del.onclick = () => {
+del.onclick = ()=>{
 
 chats =
 chats.filter(
 x => x.id !== chat.id
 );
 
-if(
-currentId === chat.id
-){
+if(currentId === chat.id){
 
 currentId =
 chats[0]?.id || null;
@@ -815,13 +731,10 @@ chats[0]?.id || null;
 save();
 
 ensureChat();
-
 render();
-
 renderChats();
 
 };
-
 
 row.append(
 name,
@@ -859,22 +772,16 @@ item.className =
 item.textContent =
 memory;
 
-
 const del =
 document.createElement("button");
 
-del.textContent =
-"×";
+del.textContent = "×";
 
-del.title =
-"Delete memory";
-
-del.onclick = () => {
+del.onclick = ()=>{
 
 memories.splice(index,1);
 
 save();
-
 renderMemories();
 
 };
@@ -892,21 +799,19 @@ box.appendChild(item);
    MODEL MENU
 ========================================================= */
 
-MODELS.forEach(
-model=>{
+MODELS.forEach(model=>{
 
 const item =
 document.createElement("div");
 
-item.className =
-"item";
+item.className = "item";
 
 item.innerHTML = `
 <span>${model.name}</span>
 <small>${model.description}</small>
 `;
 
-item.onclick = () => {
+item.onclick = ()=>{
 
 selectedModel =
 model.name;
@@ -929,17 +834,13 @@ $("modelMenu")
 
 });
 
-
 $("modelBtn").textContent =
 selectedModel + " ⌄";
 
-
-$("modelBtn").onclick = () => {
+$("modelBtn").onclick = ()=>{
 
 $("modelMenu")
-.classList.toggle(
-"hidden"
-);
+.classList.toggle("hidden");
 
 };
 
@@ -948,16 +849,12 @@ $("modelMenu")
    SETTINGS
 ========================================================= */
 
-$("settings").onclick = () => {
+$("settings").onclick = ()=>{
 
 $("apiKey").value =
 getApiKey();
 
-$("settingsStatus").textContent =
-"";
-
-$("settingsStatus").className =
-"status";
+$("settingsStatus").textContent = "";
 
 $("modal")
 .classList.remove("hidden");
@@ -966,16 +863,14 @@ renderMemories();
 
 };
 
-
-$("closeModal").onclick = () => {
+$("closeModal").onclick = ()=>{
 
 $("modal")
 .classList.add("hidden");
 
 };
 
-
-$("saveKey").onclick = () => {
+$("saveKey").onclick = ()=>{
 
 const key =
 $("apiKey").value.trim();
@@ -998,15 +893,14 @@ key
 );
 
 $("settingsStatus").textContent =
-"Gemini API key saved on this device.";
+"Gemini API key saved.";
 
 $("settingsStatus").className =
 "status success";
 
 };
 
-
-$("removeKey").onclick = () => {
+$("removeKey").onclick = ()=>{
 
 localStorage.removeItem(
 "wmetax_gemini_key"
@@ -1017,9 +911,6 @@ $("apiKey").value = "";
 $("settingsStatus").textContent =
 "Gemini API key removed.";
 
-$("settingsStatus").className =
-"status";
-
 };
 
 
@@ -1027,35 +918,30 @@ $("settingsStatus").className =
    MEMORY
 ========================================================= */
 
-$("addMemory").onclick = () => {
+$("addMemory").onclick = ()=>{
 
 const value =
 $("memoryInput")
 .value
 .trim();
 
-if(!value)
-return;
+if(!value)return;
 
 memories.push(value);
 
 $("memoryInput").value = "";
 
 save();
-
 renderMemories();
 
 };
-
 
 $("memoryInput")
 .addEventListener(
 "keydown",
 event=>{
 
-if(
-event.key === "Enter"
-){
+if(event.key === "Enter"){
 
 event.preventDefault();
 
@@ -1067,10 +953,10 @@ $("addMemory").click();
 
 
 /* =========================================================
-   CHATS
+   CHAT CONTROLS
 ========================================================= */
 
-$("chats").onclick = () => {
+$("chats").onclick = ()=>{
 
 $("drawer")
 .classList.remove("hidden");
@@ -1079,16 +965,14 @@ renderChats();
 
 };
 
-
-$("closeDrawer").onclick = () => {
+$("closeDrawer").onclick = ()=>{
 
 $("drawer")
 .classList.add("hidden");
 
 };
 
-
-$("newChat").onclick = () => {
+$("newChat").onclick = ()=>{
 
 currentId =
 crypto.randomUUID();
@@ -1096,19 +980,14 @@ crypto.randomUUID();
 chats.unshift({
 
 id:currentId,
-
 title:"New chat",
-
 pinned:false,
-
 messages:[]
 
 });
 
 save();
-
 render();
-
 renderChats();
 
 $("drawer")
@@ -1120,7 +999,7 @@ $("input").focus();
 
 
 /* =========================================================
-   GEMINI CONTENTS
+   GEMINI CONTENT
 ========================================================= */
 
 function buildContents(){
@@ -1128,13 +1007,11 @@ function buildContents(){
 const chat =
 currentChat();
 
-if(!chat)
-return [];
-
+if(!chat)return [];
 
 return chat.messages
 .slice(-30)
-.map(message => ({
+.map(message=>({
 
 role:
 message.role === "assistant"
@@ -1152,91 +1029,52 @@ text:message.content
 }
 
 
-/* =========================================================
-   SYSTEM INSTRUCTION + MEMORY
-========================================================= */
-
 function buildSystemInstruction(){
 
 let text = `
 You are wMetax ai, a helpful, accurate and professional AI assistant.
 
-The user's preferred language is Persian unless the user explicitly asks for another language.
+The user's preferred language is Persian unless they explicitly request another language.
 
 Answer clearly and directly.
 
-Do not claim access to systems, files, accounts or information that you do not actually have.
+Do not claim to have access to systems, files, accounts or information that you do not actually have.
 `;
-
 
 if(memories.length){
 
 text += `
-
 User memories:
 `;
 
 memories.forEach(memory=>{
 
-text +=
-"- " + memory + "\n";
+text += "- " + memory + "\n";
 
 });
 
 }
 
-
 return {
+
 parts:[
 {
 text:text.trim()
 }
 ]
+
 };
 
 }
 
 
 /* =========================================================
-   GEMINI REQUEST
+   GEMINI API
 ========================================================= */
 
 async function askGemini(apiKey){
 
-const contents =
-buildContents();
-
-
-if(!contents.length){
-
-throw new Error(
-"No conversation content was created."
-);
-
-}
-
-
-const requestBody = {
-
-systemInstruction:
-buildSystemInstruction(),
-
-contents:contents,
-
-generationConfig:{
-temperature:0.7,
-maxOutputTokens:4096
-}
-
-};
-
-
-let response;
-
-
-try{
-
-response =
+const response =
 await fetch(
 GEMINI_ENDPOINT,
 {
@@ -1244,33 +1082,31 @@ GEMINI_ENDPOINT,
 method:"POST",
 
 headers:{
-
-"Content-Type":
-"application/json",
-
-"x-goog-api-key":
-apiKey
-
+"Content-Type":"application/json",
+"x-goog-api-key":apiKey
 },
 
 body:
-JSON.stringify(requestBody)
+JSON.stringify({
+
+systemInstruction:
+buildSystemInstruction(),
+
+contents:
+buildContents(),
+
+generationConfig:{
+temperature:0.7,
+maxOutputTokens:4096
+}
+
+})
 
 }
 );
 
-}catch(networkError){
 
-throw new Error(
-"Network/CORS error. The browser could not reach Gemini. " +
-"Check your internet connection, browser extensions, VPN/proxy, " +
-"or whether this page is being served over HTTP/HTTPS."
-);
-
-}
-
-
-let data = null;
+let data;
 
 try{
 
@@ -1279,54 +1115,39 @@ await response.json();
 
 }catch{
 
-data = null;
+throw new Error(
+"Gemini returned an invalid response."
+);
 
 }
 
 
 if(!response.ok){
 
-const message =
-data
-?.error
-?.message ||
-"Unknown Gemini API error.";
-
 throw new Error(
 "Gemini API " +
 response.status +
 ": " +
-message
-);
-
-}
-
-
-const candidate =
-data?.candidates?.[0];
-
-
-if(!candidate){
-
-throw new Error(
-"Gemini returned no candidate."
+(
+data?.error?.message ||
+"Unknown error"
+)
 );
 
 }
 
 
 const parts =
-candidate
-?.content
-?.parts || [];
+data
+?.candidates?.[0]
+?.content?.parts || [];
 
 
 const answer =
 parts
-.map(part =>
-typeof part.text === "string"
-? part.text
-: ""
+.map(
+part =>
+part.text || ""
 )
 .join("")
 .trim();
@@ -1335,17 +1156,10 @@ typeof part.text === "string"
 if(!answer){
 
 throw new Error(
-"Gemini returned no text. " +
-(
-candidate.finishReason
-? "Finish reason: " +
-candidate.finishReason
-: ""
-)
+"Gemini returned no answer."
 );
 
 }
-
 
 return answer;
 
@@ -1364,13 +1178,10 @@ $("input");
 const text =
 input.value.trim();
 
-if(!text)
-return;
-
+if(!text)return;
 
 const apiKey =
 getApiKey();
-
 
 if(!apiKey){
 
@@ -1382,32 +1193,23 @@ $("apiKey").focus();
 $("settingsStatus").textContent =
 "Enter your Gemini API Key first.";
 
-$("settingsStatus").className =
-"status error";
-
 return;
 
 }
-
 
 ensureChat();
 
 const chat =
 currentChat();
 
-
 chat.messages.push({
 
 role:"user",
-
 content:text
 
 });
 
-
-if(
-chat.title === "New chat"
-){
+if(chat.title === "New chat"){
 
 chat.title =
 text.slice(0,50);
@@ -1417,13 +1219,9 @@ text.slice(0,50);
 input.value = "";
 
 render();
-
 save();
 
-
-$("send").disabled =
-true;
-
+$("send").disabled = true;
 
 const typing =
 document.createElement("div");
@@ -1447,27 +1245,19 @@ try{
 const answer =
 await askGemini(apiKey);
 
-
 chat.messages.push({
 
 role:"assistant",
-
 content:answer
 
 });
 
 save();
-
 render();
-
 
 }catch(error){
 
-console.error(
-"wMetax Gemini error:",
-error
-);
-
+console.error(error);
 
 chat.messages.push({
 
@@ -1480,13 +1270,11 @@ error.message
 });
 
 save();
-
 render();
 
 }finally{
 
-$("send").disabled =
-false;
+$("send").disabled = false;
 
 $("input").focus();
 
@@ -1496,12 +1284,10 @@ $("input").focus();
 
 
 /* =========================================================
-   SEND EVENTS
+   EVENTS
 ========================================================= */
 
-$("send").onclick =
-send;
-
+$("send").onclick = send;
 
 $("input")
 .addEventListener(
@@ -1522,10 +1308,6 @@ send();
 });
 
 
-/* =========================================================
-   CLOSE MODEL MENU
-========================================================= */
-
 document.addEventListener(
 "click",
 event=>{
@@ -1543,11 +1325,10 @@ $("modelMenu")
 
 
 /* =========================================================
-   INITIALIZE
+   INIT
 ========================================================= */
 
 ensureChat();
-
 render();
 
 </script>
