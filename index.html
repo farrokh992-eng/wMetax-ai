@@ -205,11 +205,95 @@ body{overflow:hidden}
   font-size:22px
 }
 
-.status{
-  text-align:center;
-  font-size:12px;
-  color:#777;
-  padding:4px
+.drawer,
+.modal{
+  position:fixed;
+  inset:0;
+  background:#0008;
+  z-index:50
+}
+
+.panel{
+  height:100%;
+  width:min(350px,88%);
+  background:#101116;
+  padding:20px;
+  box-shadow:20px 0 60px #0008;
+  overflow:auto
+}
+
+.modal .panel{
+  height:auto;
+  max-height:80%;
+  margin:10vh auto;
+  border-radius:20px;
+  width:min(430px,90%)
+}
+
+.close{
+  float:right
+}
+
+.chatrow{
+  padding:12px;
+  border-radius:12px;
+  background:#18191f;
+  margin-bottom:8px;
+  display:flex;
+  gap:8px;
+  align-items:center
+}
+
+.chatrow button{
+  background:none;
+  border:0;
+  color:#bbb;
+  cursor:pointer;
+  font-size:18px
+}
+
+.chatname{
+  flex:1;
+  cursor:pointer;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap
+}
+
+.memory{
+  padding:12px;
+  border-radius:12px;
+  background:#18191f;
+  margin:8px 0
+}
+
+.memory button{
+  float:right;
+  background:none;
+  border:0;
+  color:#aaa;
+  cursor:pointer
+}
+
+.addmem{
+  display:flex;
+  gap:8px;
+  margin-top:12px
+}
+
+.addmem input{
+  flex:1;
+  background:#18191f;
+  color:#fff;
+  border:1px solid #292a31;
+  border-radius:10px;
+  padding:10px
+}
+
+.addmem button{
+  border:0;
+  border-radius:10px;
+  padding:10px 12px
 }
 </style>
 </head>
@@ -222,17 +306,26 @@ body{overflow:hidden}
 
 <div class="brand">
 <img src="./assets/wmetax_logo.png" alt="wMetax ai">
+
 <div class="logo">
 wMetax <span>ai</span>
 </div>
 </div>
 
 <div class="actions">
-<button class="icon" id="chats">☰</button>
-<button class="icon" id="settings">⚙</button>
+
+<button class="icon" id="chats">
+☰
+</button>
+
+<button class="icon" id="settings">
+⚙
+</button>
+
 </div>
 
 </header>
+
 
 <div class="modelbar">
 
@@ -248,9 +341,6 @@ Auto ⌄
 
 </div>
 
-<div class="status" id="status">
-Ready
-</div>
 
 <main class="messages" id="messages">
 
@@ -260,6 +350,7 @@ Ask anything.
 </div>
 
 </main>
+
 
 <div class="composer">
 
@@ -281,6 +372,65 @@ class="send">
 </div>
 
 
+<!-- CHAT DRAWER -->
+
+<div class="drawer hidden" id="drawer">
+
+<div class="panel">
+
+<button class="icon close" id="closeDrawer">
+×
+</button>
+
+<h2>Chats</h2>
+
+<div class="item" id="newChat">
+＋ New chat
+</div>
+
+<div id="chatList"></div>
+
+</div>
+
+</div>
+
+
+<!-- MEMORY -->
+
+<div class="modal hidden" id="modal">
+
+<div class="panel">
+
+<button class="icon close" id="closeModal">
+×
+</button>
+
+<h2>Memory</h2>
+
+<p style="color:#888">
+Saved memories are stored on this device.
+</p>
+
+<div id="memoryList"></div>
+
+<div class="addmem">
+
+<input
+id="memoryInput"
+placeholder="Add a memory…"
+>
+
+<button id="addMemory">
+Save
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
 <script>
 
 const MODELS=[
@@ -293,61 +443,106 @@ const MODELS=[
 "Perplexity"
 ];
 
-let selectedModel="Auto";
-let messages=[];
+let selectedModel=
+localStorage.getItem("wmetax_model")||"Auto";
 
-const $=id=>document.getElementById(id);
+let chats=
+JSON.parse(
+localStorage.getItem("wmetax_chats")||"[]"
+);
+
+let memories=
+JSON.parse(
+localStorage.getItem("wmetax_memories")||"[]"
+);
+
+let currentId=
+localStorage.getItem("wmetax_current")||null;
 
 
-/* MODEL MENU */
+const $=id=>
+document.getElementById(id);
 
-MODELS.forEach(model=>{
 
-const item=document.createElement("div");
+/* CURRENT CHAT */
 
-item.className="item";
+function currentChat(){
 
-item.innerHTML=`
-<span>${model}</span>
-<small>
-${model==="Auto"?"Best model":"Available"}
-</small>
-`;
+return chats.find(
+chat=>chat.id===currentId
+);
 
-item.onclick=()=>{
+}
 
-selectedModel=model;
 
-$("modelBtn").textContent=
-model+" ⌄";
+/* SAVE */
 
-$("modelMenu")
-.classList.add("hidden");
+function save(){
 
-};
+localStorage.setItem(
+"wmetax_chats",
+JSON.stringify(chats)
+);
 
-$("modelMenu").appendChild(item);
+localStorage.setItem(
+"wmetax_memories",
+JSON.stringify(memories)
+);
+
+if(currentId){
+
+localStorage.setItem(
+"wmetax_current",
+currentId
+);
+
+}
+
+}
+
+
+/* CREATE CHAT */
+
+function ensureChat(){
+
+if(!currentChat()){
+
+currentId=
+crypto.randomUUID();
+
+chats.unshift({
+
+id:currentId,
+
+title:"New chat",
+
+pinned:false,
+
+messages:[]
 
 });
 
+save();
 
-$("modelBtn").onclick=()=>{
+}
 
-$("modelMenu")
-.classList.toggle("hidden");
-
-};
+}
 
 
 /* RENDER CHAT */
 
 function render(){
 
+const chat=currentChat();
+
 const box=$("messages");
 
 box.innerHTML="";
 
-if(messages.length===0){
+if(
+!chat ||
+chat.messages.length===0
+){
 
 box.innerHTML=`
 <div class="empty">
@@ -360,39 +555,354 @@ return;
 
 }
 
-messages.forEach(message=>{
 
-const bubble=document.createElement("div");
+chat.messages.forEach(message=>{
+
+const bubble=
+document.createElement("div");
 
 bubble.className=
 "bubble "+
-(message.role==="user"?"user":"ai");
+(
+message.role==="user"
+?"user"
+:"ai"
+);
 
-bubble.textContent=message.content;
+bubble.textContent=
+message.content;
 
 box.appendChild(bubble);
 
 });
 
-box.scrollTop=box.scrollHeight;
+box.scrollTop=
+box.scrollHeight;
 
 }
 
 
-/* SEND MESSAGE */
+/* CHAT LIST */
 
-async function sendMessage(){
+function renderChats(){
+
+const box=$("chatList");
+
+box.innerHTML="";
+
+const ordered=
+[...chats].sort(
+(a,b)=>
+Number(b.pinned)-
+Number(a.pinned)
+);
+
+
+ordered.forEach(chat=>{
+
+const row=
+document.createElement("div");
+
+row.className="chatrow";
+
+
+const name=
+document.createElement("div");
+
+name.className="chatname";
+
+name.textContent=
+(chat.pinned?"📌 ":"")+
+chat.title;
+
+name.onclick=()=>{
+
+currentId=chat.id;
+
+save();
+
+render();
+
+renderChats();
+
+$("drawer")
+.classList.add("hidden");
+
+};
+
+
+const pin=
+document.createElement("button");
+
+pin.textContent=
+chat.pinned?"📌":"📍";
+
+pin.onclick=()=>{
+
+chat.pinned=
+!chat.pinned;
+
+save();
+
+renderChats();
+
+};
+
+
+const del=
+document.createElement("button");
+
+del.textContent="×";
+
+del.onclick=()=>{
+
+chats=
+chats.filter(
+x=>x.id!==chat.id
+);
+
+if(
+currentId===chat.id
+){
+
+currentId=
+chats[0]?.id||null;
+
+}
+
+save();
+
+render();
+
+renderChats();
+
+};
+
+
+row.appendChild(name);
+
+row.appendChild(pin);
+
+row.appendChild(del);
+
+box.appendChild(row);
+
+});
+
+}
+
+
+/* MEMORY LIST */
+
+function renderMemories(){
+
+const box=$("memoryList");
+
+box.innerHTML="";
+
+memories.forEach(
+(memory,index)=>{
+
+const item=
+document.createElement("div");
+
+item.className="memory";
+
+item.textContent=
+memory;
+
+
+const del=
+document.createElement("button");
+
+del.textContent="×";
+
+del.onclick=()=>{
+
+memories.splice(index,1);
+
+save();
+
+renderMemories();
+
+};
+
+item.appendChild(del);
+
+box.appendChild(item);
+
+});
+
+}
+
+
+/* MODEL MENU */
+
+MODELS.forEach(model=>{
+
+const item=
+document.createElement("div");
+
+item.className="item";
+
+item.innerHTML=`
+<span>${model}</span>
+<small>
+${
+model==="Auto"
+?"Best model"
+:"Available"
+}
+</small>
+`;
+
+item.onclick=()=>{
+
+selectedModel=model;
+
+localStorage.setItem(
+"wmetax_model",
+model
+);
+
+$("modelBtn").textContent=
+model+" ⌄";
+
+$("modelMenu")
+.classList.add("hidden");
+
+};
+
+$("modelMenu")
+.appendChild(item);
+
+});
+
+
+$("modelBtn").textContent=
+selectedModel+" ⌄";
+
+
+$("modelBtn").onclick=()=>{
+
+$("modelMenu")
+.classList.toggle("hidden");
+
+};
+
+
+/* CHAT BUTTON */
+
+$("chats").onclick=()=>{
+
+$("drawer")
+.classList.remove("hidden");
+
+renderChats();
+
+};
+
+
+/* CLOSE CHAT */
+
+$("closeDrawer").onclick=()=>{
+
+$("drawer")
+.classList.add("hidden");
+
+};
+
+
+/* NEW CHAT */
+
+$("newChat").onclick=()=>{
+
+currentId=
+crypto.randomUUID();
+
+chats.unshift({
+
+id:currentId,
+
+title:"New chat",
+
+pinned:false,
+
+messages:[]
+
+});
+
+save();
+
+render();
+
+renderChats();
+
+$("drawer")
+.classList.add("hidden");
+
+};
+
+
+/* MEMORY */
+
+$("settings").onclick=()=>{
+
+$("modal")
+.classList.remove("hidden");
+
+renderMemories();
+
+};
+
+
+$("closeModal").onclick=()=>{
+
+$("modal")
+.classList.add("hidden");
+
+};
+
+
+/* ADD MEMORY */
+
+$("addMemory").onclick=()=>{
+
+const value=
+$("memoryInput")
+.value
+.trim();
+
+if(!value)return;
+
+memories.push(value);
+
+$("memoryInput").value="";
+
+save();
+
+renderMemories();
+
+};
+
+
+/* SEND */
+
+async function send(){
 
 const input=$("input");
 
-const text=input.value.trim();
+const text=
+input.value.trim();
 
 if(!text)return;
 
+ensureChat();
 
-/* USER MESSAGE */
+const chat=currentChat();
 
-messages.push({
+
+chat.messages.push({
 
 role:"user",
 
@@ -400,82 +910,63 @@ content:text
 
 });
 
+
+if(
+chat.title==="New chat"
+){
+
+chat.title=
+text.slice(0,40);
+
+}
+
 input.value="";
 
 render();
 
-$("status").textContent=
-"Connecting to AI…";
+save();
 
 
 /*
-IMPORTANT:
-
-The real AI Gateway will be inserted here.
-
-Frontend will NOT contain
-a permanent API key.
-*/
-
-try{
-
-/*
-Temporary local demo response.
-This replaces the old fake
-"Gateway not connected" message.
-
-The next backend connection
-will replace this block.
+AI PROVIDER CONNECTION
+WILL BE ADDED HERE.
 */
 
 await new Promise(
-resolve=>setTimeout(resolve,600)
+resolve=>
+setTimeout(resolve,400)
 );
 
-messages.push({
+
+chat.messages.push({
 
 role:"assistant",
 
 content:
-"wMetax ai is ready for the AI Gateway.\n\nSelected model: "+
+"Your message has been saved.\n\n"+
+"Model: "+
 selectedModel+
-"\n\nThe interface is connected and waiting for the real AI provider."
+"\n\n"+
+"AI provider connection is the next step."
 
 });
 
-$("status").textContent="Ready";
-
 render();
 
-}catch(error){
-
-messages.push({
-
-role:"assistant",
-
-content:
-"Connection error: "+
-error.message
-
-});
-
-$("status").textContent="Error";
-
-render();
-
-}
+save();
 
 }
 
 
 /* SEND BUTTON */
 
-$("send").onclick=sendMessage;
+$("send").onclick=send;
 
 
-/* ENTER TO SEND */
+/* ENTER */
 
-$("input").addEventListener(
+$("input")
+.addEventListener(
 "keydown",
 event=>{
 
@@ -486,30 +977,18 @@ event.key==="Enter" &&
 
 event.preventDefault();
 
-sendMessage();
+send();
 
 }
 
 });
 
 
-/* CLOSE MODEL MENU */
+/* INITIALIZE */
 
-document.addEventListener(
-"click",
-event=>{
+ensureChat();
 
-if(
-!event.target.closest(".model")
-){
-
-$("modelMenu")
-.classList.add("hidden");
-
-}
-
-});
-
+render();
 
 </script>
 
