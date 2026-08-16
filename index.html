@@ -19,6 +19,8 @@ html,body{
 
 body{overflow:hidden}
 
+button,input,textarea{font:inherit}
+
 .app{
   height:100dvh;
   max-width:900px;
@@ -91,7 +93,8 @@ body{overflow:hidden}
   border-radius:14px;
   padding:10px 15px;
   font-size:15px;
-  min-width:140px
+  min-width:140px;
+  cursor:pointer
 }
 
 .menu{
@@ -104,7 +107,7 @@ body{overflow:hidden}
   border:1px solid #292a31;
   border-radius:16px;
   padding:7px;
-  z-index:20;
+  z-index:30;
   box-shadow:0 18px 50px #0009
 }
 
@@ -169,6 +172,10 @@ body{overflow:hidden}
   background:#15161b
 }
 
+.typing{
+  opacity:.65
+}
+
 .composer{
   position:fixed;
   left:50%;
@@ -192,7 +199,6 @@ body{overflow:hidden}
   background:#17181d;
   color:#fff;
   padding:15px;
-  font:inherit
 }
 
 .send{
@@ -202,7 +208,13 @@ body{overflow:hidden}
   border-radius:17px;
   background:#f1f1f3;
   color:#08080a;
-  font-size:22px
+  font-size:22px;
+  cursor:pointer
+}
+
+.send:disabled{
+  opacity:.5;
+  cursor:default
 }
 
 .drawer,
@@ -224,10 +236,10 @@ body{overflow:hidden}
 
 .modal .panel{
   height:auto;
-  max-height:80%;
-  margin:10vh auto;
+  max-height:85%;
+  margin:8vh auto;
   border-radius:20px;
-  width:min(430px,90%)
+  width:min(440px,92%)
 }
 
 .close{
@@ -290,10 +302,50 @@ body{overflow:hidden}
   padding:10px
 }
 
-.addmem button{
+.addmem button,
+.primary{
   border:0;
   border-radius:10px;
-  padding:10px 12px
+  padding:10px 14px;
+  cursor:pointer
+}
+
+.field{
+  margin:18px 0
+}
+
+.field label{
+  display:block;
+  color:#aaa;
+  font-size:13px;
+  margin-bottom:7px
+}
+
+.field input{
+  width:100%;
+  background:#18191f;
+  color:#fff;
+  border:1px solid #292a31;
+  border-radius:11px;
+  padding:12px;
+  outline:none
+}
+
+.help{
+  color:#777;
+  font-size:12px;
+  line-height:1.6
+}
+
+.status{
+  min-height:18px;
+  margin-top:8px;
+  font-size:12px
+}
+
+.danger{
+  background:#2a1719;
+  color:#ffb5b8
 }
 </style>
 </head>
@@ -306,22 +358,12 @@ body{overflow:hidden}
 
 <div class="brand">
 <img src="./assets/wmetax_logo.png" alt="wMetax ai">
-
-<div class="logo">
-wMetax <span>ai</span>
-</div>
+<div class="logo">wMetax <span>ai</span></div>
 </div>
 
 <div class="actions">
-
-<button class="icon" id="chats">
-☰
-</button>
-
-<button class="icon" id="settings">
-⚙
-</button>
-
+<button class="icon" id="chats" title="Chats">☰</button>
+<button class="icon" id="settings" title="Settings">⚙</button>
 </div>
 
 </header>
@@ -331,9 +373,7 @@ wMetax <span>ai</span>
 
 <div class="model">
 
-<button id="modelBtn">
-Auto ⌄
-</button>
+<button id="modelBtn">Auto ⌄</button>
 
 <div class="menu hidden" id="modelMenu"></div>
 
@@ -342,14 +382,7 @@ Auto ⌄
 </div>
 
 
-<main class="messages" id="messages">
-
-<div class="empty">
-<b>wMetax ai</b>
-Ask anything.
-</div>
-
-</main>
+<main class="messages" id="messages"></main>
 
 
 <div class="composer">
@@ -359,13 +392,10 @@ id="input"
 class="input"
 rows="1"
 placeholder="Ask anything…"
+autocomplete="off"
 ></textarea>
 
-<button
-id="send"
-class="send">
-➤
-</button>
+<button id="send" class="send">➤</button>
 
 </div>
 
@@ -378,9 +408,7 @@ class="send">
 
 <div class="panel">
 
-<button class="icon close" id="closeDrawer">
-×
-</button>
+<button class="icon close" id="closeDrawer">×</button>
 
 <h2>Chats</h2>
 
@@ -395,20 +423,50 @@ class="send">
 </div>
 
 
-<!-- MEMORY -->
+<!-- SETTINGS / MEMORY -->
 
 <div class="modal hidden" id="modal">
 
 <div class="panel">
 
-<button class="icon close" id="closeModal">
-×
+<button class="icon close" id="closeModal">×</button>
+
+<h2>Settings</h2>
+
+<div class="field">
+
+<label>OpenAI API Key</label>
+
+<input
+id="apiKey"
+type="password"
+placeholder="sk-..."
+autocomplete="off"
+>
+
+</div>
+
+<button class="primary" id="saveKey">
+Save API Key
 </button>
 
-<h2>Memory</h2>
+<button class="primary danger" id="removeKey">
+Remove API Key
+</button>
 
-<p style="color:#888">
-Saved memories are stored on this device.
+<p class="help">
+Your API key is stored only in this browser's local storage
+for this private demo. Do not use this approach for a public
+production application.
+</p>
+
+<hr style="border-color:#24252b;margin:22px 0">
+
+<h3>Memory</h3>
+
+<p class="help">
+Memories are stored locally and included as context when
+you chat with the AI.
 </p>
 
 <div id="memoryList"></div>
@@ -426,6 +484,8 @@ Save
 
 </div>
 
+<div id="settingsStatus" class="status"></div>
+
 </div>
 
 </div>
@@ -433,49 +493,56 @@ Save
 
 <script>
 
-const MODELS=[
-"Auto",
-"ChatGPT",
-"Claude",
-"Grok",
-"Gemini",
-"DeepSeek",
-"Perplexity"
-];
+/* =========================
+   CONFIGURATION
+========================= */
 
-let selectedModel=
-localStorage.getItem("wmetax_model")||"Auto";
+const OPENAI_URL =
+"https://api.openai.com/v1/chat/completions";
 
-let chats=
-JSON.parse(
-localStorage.getItem("wmetax_chats")||"[]"
-);
+const MODELS = [
 
-let memories=
-JSON.parse(
-localStorage.getItem("wmetax_memories")||"[]"
-);
+{
+name:"Auto",
+id:"auto"
+},
 
-let currentId=
-localStorage.getItem("wmetax_current")||null;
-
-
-const $=id=>
-document.getElementById(id);
-
-
-/* CURRENT CHAT */
-
-function currentChat(){
-
-return chats.find(
-chat=>chat.id===currentId
-);
-
+{
+name:"ChatGPT",
+id:"gpt-4o-mini"
 }
 
+];
 
-/* SAVE */
+
+/* =========================
+   STORAGE
+========================= */
+
+let selectedModel =
+localStorage.getItem("wmetax_model") || "Auto";
+
+let chats =
+JSON.parse(
+localStorage.getItem("wmetax_chats") || "[]"
+);
+
+let memories =
+JSON.parse(
+localStorage.getItem("wmetax_memories") || "[]"
+);
+
+let currentId =
+localStorage.getItem("wmetax_current") || null;
+
+
+const $ =
+id => document.getElementById(id);
+
+
+/* =========================
+   STORAGE HELPERS
+========================= */
 
 function save(){
 
@@ -501,13 +568,33 @@ currentId
 }
 
 
-/* CREATE CHAT */
+function getApiKey(){
+
+return localStorage.getItem(
+"wmetax_openai_key"
+) || "";
+
+}
+
+
+/* =========================
+   CHAT
+========================= */
+
+function currentChat(){
+
+return chats.find(
+chat => chat.id === currentId
+);
+
+}
+
 
 function ensureChat(){
 
 if(!currentChat()){
 
-currentId=
+currentId =
 crypto.randomUUID();
 
 chats.unshift({
@@ -529,22 +616,26 @@ save();
 }
 
 
-/* RENDER CHAT */
+/* =========================
+   RENDER CHAT
+========================= */
 
 function render(){
 
-const chat=currentChat();
+const chat =
+currentChat();
 
-const box=$("messages");
+const box =
+$("messages");
 
-box.innerHTML="";
+box.innerHTML = "";
 
 if(
 !chat ||
-chat.messages.length===0
+chat.messages.length === 0
 ){
 
-box.innerHTML=`
+box.innerHTML = `
 <div class="empty">
 <b>wMetax ai</b>
 Ask anything.
@@ -556,68 +647,76 @@ return;
 }
 
 
-chat.messages.forEach(message=>{
+chat.messages.forEach(
+message => {
 
-const bubble=
+const bubble =
 document.createElement("div");
 
-bubble.className=
-"bubble "+
+bubble.className =
+"bubble " +
 (
-message.role==="user"
-?"user"
-:"ai"
+message.role === "user"
+? "user"
+: "ai"
 );
 
-bubble.textContent=
+bubble.textContent =
 message.content;
 
 box.appendChild(bubble);
 
 });
 
-box.scrollTop=
+
+box.scrollTop =
 box.scrollHeight;
 
 }
 
 
-/* CHAT LIST */
+/* =========================
+   CHAT LIST
+========================= */
 
 function renderChats(){
 
-const box=$("chatList");
+const box =
+$("chatList");
 
-box.innerHTML="";
+box.innerHTML = "";
 
-const ordered=
-[...chats].sort(
+[
+...chats
+]
+.sort(
 (a,b)=>
-Number(b.pinned)-
+Number(b.pinned) -
 Number(a.pinned)
-);
+)
+.forEach(chat=>{
 
-
-ordered.forEach(chat=>{
-
-const row=
+const row =
 document.createElement("div");
 
-row.className="chatrow";
+row.className =
+"chatrow";
 
 
-const name=
+const name =
 document.createElement("div");
 
-name.className="chatname";
+name.className =
+"chatname";
 
-name.textContent=
-(chat.pinned?"📌 ":"")+
+name.textContent =
+(chat.pinned ? "📌 " : "") +
 chat.title;
 
-name.onclick=()=>{
+name.onclick = () => {
 
-currentId=chat.id;
+currentId =
+chat.id;
 
 save();
 
@@ -631,15 +730,18 @@ $("drawer")
 };
 
 
-const pin=
+const pin =
 document.createElement("button");
 
-pin.textContent=
-chat.pinned?"📌":"📍";
+pin.textContent =
+chat.pinned ? "📌" : "📍";
 
-pin.onclick=()=>{
+pin.title =
+"Pin chat";
 
-chat.pinned=
+pin.onclick = () => {
+
+chat.pinned =
 !chat.pinned;
 
 save();
@@ -649,28 +751,33 @@ renderChats();
 };
 
 
-const del=
+const del =
 document.createElement("button");
 
-del.textContent="×";
+del.textContent = "×";
 
-del.onclick=()=>{
+del.title =
+"Delete chat";
 
-chats=
+del.onclick = () => {
+
+chats =
 chats.filter(
-x=>x.id!==chat.id
+x => x.id !== chat.id
 );
 
 if(
-currentId===chat.id
+currentId === chat.id
 ){
 
-currentId=
-chats[0]?.id||null;
+currentId =
+chats[0]?.id || null;
 
 }
 
 save();
+
+ensureChat();
 
 render();
 
@@ -679,11 +786,11 @@ renderChats();
 };
 
 
-row.appendChild(name);
-
-row.appendChild(pin);
-
-row.appendChild(del);
+row.append(
+name,
+pin,
+del
+);
 
 box.appendChild(row);
 
@@ -692,32 +799,37 @@ box.appendChild(row);
 }
 
 
-/* MEMORY LIST */
+/* =========================
+   MEMORY
+========================= */
 
 function renderMemories(){
 
-const box=$("memoryList");
+const box =
+$("memoryList");
 
-box.innerHTML="";
+box.innerHTML = "";
 
 memories.forEach(
 (memory,index)=>{
 
-const item=
+const item =
 document.createElement("div");
 
-item.className="memory";
+item.className =
+"memory";
 
-item.textContent=
+item.textContent =
 memory;
 
 
-const del=
+const del =
 document.createElement("button");
 
-del.textContent="×";
+del.textContent =
+"×";
 
-del.onclick=()=>{
+del.onclick = () => {
 
 memories.splice(index,1);
 
@@ -736,37 +848,40 @@ box.appendChild(item);
 }
 
 
-/* MODEL MENU */
+/* =========================
+   MODEL MENU
+========================= */
 
-MODELS.forEach(model=>{
+MODELS.forEach(
+model=>{
 
-const item=
+const item =
 document.createElement("div");
 
-item.className="item";
+item.className =
+"item";
 
-item.innerHTML=`
-<span>${model}</span>
+item.innerHTML = `
+<span>${model.name}</span>
 <small>
-${
-model==="Auto"
-?"Best model"
-:"Available"
-}
+${model.name === "Auto"
+? "Best model"
+: model.id}
 </small>
 `;
 
-item.onclick=()=>{
+item.onclick = () => {
 
-selectedModel=model;
+selectedModel =
+model.name;
 
 localStorage.setItem(
 "wmetax_model",
-model
+selectedModel
 );
 
-$("modelBtn").textContent=
-model+" ⌄";
+$("modelBtn").textContent =
+selectedModel + " ⌄";
 
 $("modelMenu")
 .classList.add("hidden");
@@ -779,45 +894,165 @@ $("modelMenu")
 });
 
 
-$("modelBtn").textContent=
-selectedModel+" ⌄";
+$("modelBtn").textContent =
+selectedModel + " ⌄";
 
 
-$("modelBtn").onclick=()=>{
+$("modelBtn").onclick = () => {
 
 $("modelMenu")
-.classList.toggle("hidden");
+.classList.toggle(
+"hidden"
+);
 
 };
 
 
-/* CHAT BUTTON */
+/* =========================
+   SETTINGS
+========================= */
 
-$("chats").onclick=()=>{
+$("settings").onclick = () => {
+
+$("apiKey").value =
+getApiKey();
+
+$("modal")
+.classList.remove("hidden");
+
+renderMemories();
+
+};
+
+
+$("closeModal").onclick = () => {
+
+$("modal")
+.classList.add("hidden");
+
+};
+
+
+$("saveKey").onclick = () => {
+
+const key =
+$("apiKey").value.trim();
+
+if(!key){
+
+$("settingsStatus").textContent =
+"Enter an API key first.";
+
+return;
+
+}
+
+if(!key.startsWith("sk-")){
+
+$("settingsStatus").textContent =
+"The key does not look like an OpenAI API key.";
+
+return;
+
+}
+
+localStorage.setItem(
+"wmetax_openai_key",
+key
+);
+
+$("settingsStatus").textContent =
+"API key saved on this device.";
+
+};
+
+
+$("removeKey").onclick = () => {
+
+localStorage.removeItem(
+"wmetax_openai_key"
+);
+
+$("apiKey").value = "";
+
+$("settingsStatus").textContent =
+"API key removed.";
+
+};
+
+
+/* =========================
+   MEMORY
+========================= */
+
+$("addMemory").onclick = () => {
+
+const value =
+$("memoryInput")
+.value
+.trim();
+
+if(!value)
+return;
+
+memories.push(value);
+
+$("memoryInput").value = "";
+
+save();
+
+renderMemories();
+
+};
+
+
+$("memoryInput")
+.addEventListener(
+"keydown",
+event=>{
+
+if(
+event.key === "Enter"
+){
+
+event.preventDefault();
+
+$("addMemory").click();
+
+}
+
+});
+
+
+/* =========================
+   CHATS
+========================= */
+
+$("chats").onclick = () => {
 
 $("drawer")
-.classList.remove("hidden");
+.classList.remove(
+"hidden"
+);
 
 renderChats();
 
 };
 
 
-/* CLOSE CHAT */
-
-$("closeDrawer").onclick=()=>{
+$("closeDrawer").onclick = () => {
 
 $("drawer")
-.classList.add("hidden");
+.classList.add(
+"hidden"
+);
 
 };
 
 
-/* NEW CHAT */
+$("newChat").onclick = () => {
 
-$("newChat").onclick=()=>{
-
-currentId=
+currentId =
 crypto.randomUUID();
 
 chats.unshift({
@@ -839,67 +1074,121 @@ render();
 renderChats();
 
 $("drawer")
-.classList.add("hidden");
+.classList.add(
+"hidden"
+);
+
+$("input").focus();
 
 };
 
 
-/* MEMORY */
+/* =========================
+   AI
+========================= */
 
-$("settings").onclick=()=>{
+function buildMessages(){
 
-$("modal")
-.classList.remove("hidden");
-
-renderMemories();
-
-};
+const result = [];
 
 
-$("closeModal").onclick=()=>{
+/* SYSTEM */
 
-$("modal")
-.classList.add("hidden");
-
-};
+let system =
+"You are wMetax ai, a helpful AI assistant.";
 
 
-/* ADD MEMORY */
+if(memories.length){
 
-$("addMemory").onclick=()=>{
+system +=
+"\n\nUser memories:\n" +
+memories
+.map(x=>"- "+x)
+.join("\n");
 
-const value=
-$("memoryInput")
-.value
-.trim();
-
-if(!value)return;
-
-memories.push(value);
-
-$("memoryInput").value="";
-
-save();
-
-renderMemories();
-
-};
+}
 
 
-/* SEND */
+result.push({
+
+role:"system",
+
+content:system
+
+});
+
+
+/* CHAT HISTORY */
+
+const chat =
+currentChat();
+
+if(chat){
+
+chat.messages
+.slice(-30)
+.forEach(message=>{
+
+result.push({
+
+role:
+message.role,
+
+content:
+message.content
+
+});
+
+});
+
+}
+
+return result;
+
+}
+
+
+/* =========================
+   SEND
+========================= */
 
 async function send(){
 
-const input=$("input");
+const input =
+$("input");
 
-const text=
+const text =
 input.value.trim();
 
-if(!text)return;
+if(!text)
+return;
+
+
+const apiKey =
+getApiKey();
+
+
+if(!apiKey){
+
+$("modal")
+.classList.remove(
+"hidden"
+);
+
+$("apiKey").focus();
+
+$("settingsStatus").textContent =
+"Enter your OpenAI API Key first.";
+
+return;
+
+}
+
 
 ensureChat();
 
-const chat=currentChat();
+const chat =
+currentChat();
 
 
 chat.messages.push({
@@ -912,58 +1201,169 @@ content:text
 
 
 if(
-chat.title==="New chat"
+chat.title === "New chat"
 ){
 
-chat.title=
-text.slice(0,40);
+chat.title =
+text
+.slice(0,50);
 
 }
 
-input.value="";
+input.value = "";
 
 render();
 
 save();
 
 
-/*
-AI PROVIDER CONNECTION
-WILL BE ADDED HERE.
-*/
+$("send").disabled = true;
 
-await new Promise(
-resolve=>
-setTimeout(resolve,400)
+
+/* TYPING */
+
+const typing =
+document.createElement("div");
+
+typing.className =
+"bubble ai typing";
+
+typing.textContent =
+"Thinking…";
+
+$("messages")
+.appendChild(typing);
+
+$("messages")
+.scrollTop =
+$("messages").scrollHeight;
+
+
+try{
+
+let model =
+selectedModel === "Auto"
+? "gpt-4o-mini"
+: "gpt-4o-mini";
+
+
+const response =
+await fetch(
+OPENAI_URL,
+{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":
+"application/json",
+
+"Authorization":
+"Bearer " + apiKey
+
+},
+
+body:
+JSON.stringify({
+
+model:model,
+
+messages:
+buildMessages(),
+
+temperature:0.7
+
+})
+
+});
+
+
+if(!response.ok){
+
+let errorText =
+await response.text();
+
+throw new Error(
+"OpenAI API "+
+response.status+
+": "+
+errorText
 );
+
+}
+
+
+const data =
+await response.json();
+
+
+const answer =
+data
+?.choices
+?.[0]
+?.message
+?.content;
+
+
+if(!answer){
+
+throw new Error(
+"OpenAI returned no answer."
+);
+
+}
 
 
 chat.messages.push({
 
 role:"assistant",
 
-content:
-"Your message has been saved.\n\n"+
-"Model: "+
-selectedModel+
-"\n\n"+
-"AI provider connection is the next step."
+content:answer
 
 });
 
+save();
+
 render();
 
+
+}catch(error){
+
+chat.messages.push({
+
+role:"assistant",
+
+content:
+"خطا در اتصال به OpenAI:\n\n"+
+error.message
+
+});
+
 save();
+
+render();
+
+
+}finally{
+
+$("send").disabled =
+false;
+
+$("input").focus();
+
+}
 
 }
 
 
-/* SEND BUTTON */
+/* =========================
+   SEND EVENTS
+========================= */
 
-$("send").onclick=send;
+$("send").onclick =
+send;
 
-
-/* ENTER */
 
 $("input")
 .addEventListener(
@@ -971,7 +1371,7 @@ $("input")
 event=>{
 
 if(
-event.key==="Enter" &&
+event.key === "Enter" &&
 !event.shiftKey
 ){
 
@@ -984,7 +1384,31 @@ send();
 });
 
 
-/* INITIALIZE */
+/* =========================
+   CLOSE MENUS
+========================= */
+
+document.addEventListener(
+"click",
+event=>{
+
+if(
+!event.target.closest(".model")
+){
+
+$("modelMenu")
+.classList.add(
+"hidden"
+);
+
+}
+
+});
+
+
+/* =========================
+   INITIALIZE
+========================= */
 
 ensureChat();
 
