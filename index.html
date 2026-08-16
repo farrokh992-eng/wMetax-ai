@@ -1,35 +1,517 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#050507"><title>wMetax ai</title>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050507">
+<title>wMetax ai</title>
+
 <style>
-*{box-sizing:border-box}html,body{margin:0;height:100%;background:#050507;color:#f4f4f6;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
-body{overflow:hidden}.app{height:100dvh;max-width:900px;margin:auto;display:flex;flex-direction:column}.top{height:62px;display:flex;align-items:center;padding:0 16px}
-.brand{display:flex;align-items:center;gap:10px}.brand img{width:36px;height:36px;border-radius:10px;object-fit:cover}.logo{font-size:25px;font-weight:750}.logo span{font-weight:450;color:#8d8e96}
-.actions{margin-left:auto;display:flex;gap:5px}.icon{width:40px;height:40px;border:0;border-radius:13px;background:#15161b;color:#ddd;font-size:20px;cursor:pointer}
-.modelbar{display:flex;justify-content:center;padding:2px 16px 8px}.model{position:relative}.model>button{border:0;background:#17181d;color:#eee;border-radius:14px;padding:10px 15px;font-size:15px;min-width:140px}
-.menu{position:absolute;top:48px;left:50%;transform:translateX(-50%);width:235px;background:#17181d;border:1px solid #292a31;border-radius:16px;padding:7px;z-index:20;box-shadow:0 18px 50px #0009}.hidden{display:none!important}
-.item{padding:11px 12px;border-radius:11px;cursor:pointer;display:flex;justify-content:space-between}.item:hover{background:#24252b}.item small{color:#85858d}
-.messages{flex:1;overflow:auto;padding:10px 16px 120px;display:flex;flex-direction:column;gap:10px}.empty{margin:auto;text-align:center;color:#8c8d95}.empty b{display:block;color:#eee;font-size:28px;margin-bottom:8px}
-.bubble{max-width:82%;padding:12px 14px;border-radius:17px;line-height:1.6;font-size:15px;white-space:pre-wrap}.user{align-self:flex-end;background:#2a2c34}.ai{align-self:flex-start;background:#15161b}.meta{font-size:11px;color:#777a83;margin-top:6px}
-.composer{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(900px,100%);padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:linear-gradient(transparent,#050507 25%);display:flex;gap:8px}
-.input{flex:1;min-height:52px;max-height:140px;resize:none;border:0;outline:0;border-radius:18px;background:#17181d;color:#fff;padding:15px;font:inherit}.send{width:52px;height:52px;border:0;border-radius:17px;background:#f1f1f3;color:#08080a;font-size:22px}
-.notice{margin:4px 14px 6px;padding:10px 12px;border-radius:14px;background:#15161b;display:flex;align-items:center;gap:10px;font-size:13px}.notice button{margin-left:auto;border:0;border-radius:10px;padding:8px 11px;cursor:pointer}
-.drawer,.modal{position:fixed;inset:0;background:#0008;z-index:50}.panel{height:100%;width:min(330px,86%);background:#101116;padding:20px;box-shadow:20px 0 60px #0008}.modal .panel{height:auto;max-height:80%;margin:10vh auto;border-radius:20px;width:min(430px,90%)}.close{float:right}.chatrow{padding:12px;border-radius:12px;background:#18191f;margin-bottom:8px}
-</style></head><body><div class="app">
-<header class="top"><div class="brand"><img src="./assets/wmetax_logo.png" alt="wMetax ai"><div class="logo">wMetax <span>ai</span></div></div><div class="actions"><button class="icon" id="chats">☰</button><button class="icon" id="settings">⚙</button></div></header>
-<div id="updateNotice" class="notice hidden"><span id="updateText">New version available.</span><button id="updateBtn">UPDATE</button></div>
-<div class="modelbar"><div class="model"><button id="modelBtn">Auto ⌄</button><div class="menu hidden" id="modelMenu"></div></div></div>
-<main class="messages" id="messages"><div class="empty"><b>wMetax ai</b>Ask anything. Auto will choose the best model.</div></main>
-<div class="composer"><textarea id="input" class="input" rows="1" placeholder="Ask anything…"></textarea><button id="send" class="send">➤</button></div></div>
-<div class="drawer hidden" id="drawer"><div class="panel"><button class="icon close" id="closeDrawer">×</button><h2>Chats</h2><p style="color:#777">No saved chats yet.</p><div class="item" id="newChat">＋ New chat</div></div></div>
-<div class="modal hidden" id="modal"><div class="panel"><button class="icon close" id="closeModal">×</button><h2>Settings</h2><p style="color:#999">App language: English</p><p style="color:#999">Response language: Auto</p><p style="color:#777;line-height:1.6">Responses follow the language you use.</p></div></div>
+*{box-sizing:border-box}
+
+html,body{
+  margin:0;
+  height:100%;
+  background:#050507;
+  color:#f4f4f6;
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif
+}
+
+body{overflow:hidden}
+
+.app{
+  height:100dvh;
+  max-width:900px;
+  margin:auto;
+  display:flex;
+  flex-direction:column
+}
+
+.top{
+  height:62px;
+  display:flex;
+  align-items:center;
+  padding:0 16px
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px
+}
+
+.brand img{
+  width:36px;
+  height:36px;
+  border-radius:10px;
+  object-fit:cover
+}
+
+.logo{
+  font-size:25px;
+  font-weight:750
+}
+
+.logo span{
+  font-weight:450;
+  color:#8d8e96
+}
+
+.actions{
+  margin-left:auto;
+  display:flex;
+  gap:5px
+}
+
+.icon{
+  width:40px;
+  height:40px;
+  border:0;
+  border-radius:13px;
+  background:#15161b;
+  color:#ddd;
+  font-size:20px;
+  cursor:pointer
+}
+
+.modelbar{
+  display:flex;
+  justify-content:center;
+  padding:2px 16px 8px
+}
+
+.model{
+  position:relative
+}
+
+.model>button{
+  border:0;
+  background:#17181d;
+  color:#eee;
+  border-radius:14px;
+  padding:10px 15px;
+  font-size:15px;
+  min-width:140px
+}
+
+.menu{
+  position:absolute;
+  top:48px;
+  left:50%;
+  transform:translateX(-50%);
+  width:235px;
+  background:#17181d;
+  border:1px solid #292a31;
+  border-radius:16px;
+  padding:7px;
+  z-index:20;
+  box-shadow:0 18px 50px #0009
+}
+
+.hidden{
+  display:none!important
+}
+
+.item{
+  padding:11px 12px;
+  border-radius:11px;
+  cursor:pointer;
+  display:flex;
+  justify-content:space-between
+}
+
+.item:hover{
+  background:#24252b
+}
+
+.item small{
+  color:#85858d
+}
+
+.messages{
+  flex:1;
+  overflow:auto;
+  padding:10px 16px 120px;
+  display:flex;
+  flex-direction:column;
+  gap:10px
+}
+
+.empty{
+  margin:auto;
+  text-align:center;
+  color:#8c8d95
+}
+
+.empty b{
+  display:block;
+  color:#eee;
+  font-size:28px;
+  margin-bottom:8px
+}
+
+.bubble{
+  max-width:82%;
+  padding:12px 14px;
+  border-radius:17px;
+  line-height:1.6;
+  font-size:15px;
+  white-space:pre-wrap
+}
+
+.user{
+  align-self:flex-end;
+  background:#2a2c34
+}
+
+.ai{
+  align-self:flex-start;
+  background:#15161b
+}
+
+.composer{
+  position:fixed;
+  left:50%;
+  transform:translateX(-50%);
+  bottom:0;
+  width:min(900px,100%);
+  padding:10px 16px calc(10px + env(safe-area-inset-bottom));
+  background:linear-gradient(transparent,#050507 25%);
+  display:flex;
+  gap:8px
+}
+
+.input{
+  flex:1;
+  min-height:52px;
+  max-height:140px;
+  resize:none;
+  border:0;
+  outline:0;
+  border-radius:18px;
+  background:#17181d;
+  color:#fff;
+  padding:15px;
+  font:inherit
+}
+
+.send{
+  width:52px;
+  height:52px;
+  border:0;
+  border-radius:17px;
+  background:#f1f1f3;
+  color:#08080a;
+  font-size:22px
+}
+
+.status{
+  text-align:center;
+  font-size:12px;
+  color:#777;
+  padding:4px
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header class="top">
+
+<div class="brand">
+<img src="./assets/wmetax_logo.png" alt="wMetax ai">
+<div class="logo">
+wMetax <span>ai</span>
+</div>
+</div>
+
+<div class="actions">
+<button class="icon" id="chats">☰</button>
+<button class="icon" id="settings">⚙</button>
+</div>
+
+</header>
+
+<div class="modelbar">
+
+<div class="model">
+
+<button id="modelBtn">
+Auto ⌄
+</button>
+
+<div class="menu hidden" id="modelMenu"></div>
+
+</div>
+
+</div>
+
+<div class="status" id="status">
+Ready
+</div>
+
+<main class="messages" id="messages">
+
+<div class="empty">
+<b>wMetax ai</b>
+Ask anything.
+</div>
+
+</main>
+
+<div class="composer">
+
+<textarea
+id="input"
+class="input"
+rows="1"
+placeholder="Ask anything…"
+></textarea>
+
+<button
+id="send"
+class="send">
+➤
+</button>
+
+</div>
+
+</div>
+
+
 <script>
-const WEB_VERSION="1.0.1",VERSION_URL="./version.json",APK_URL="https://github.com/farrokh992-eng/wMetax-ai/releases/latest/download/wMetax-ai.apk";
-const names=["Auto","ChatGPT","Claude","Grok","Gemini","DeepSeek","Perplexity"];let selected="Auto",msgs=[];const $=x=>document.getElementById(x);
-names.forEach(n=>{let d=document.createElement("div");d.className="item";d.innerHTML=`<span>${n}</span><small>${n==="Auto"?"Best model":n==="Perplexity"?"Search":"Latest available"}</small>`;d.onclick=()=>{selected=n;$("modelBtn").textContent=n+" ⌄";$("modelMenu").classList.add("hidden")};$("modelMenu").appendChild(d)});
-$("modelBtn").onclick=()=>$("modelMenu").classList.toggle("hidden");$("chats").onclick=()=>$("drawer").classList.remove("hidden");$("closeDrawer").onclick=()=>$("drawer").classList.add("hidden");$("settings").onclick=()=>$("modal").classList.remove("hidden");$("closeModal").onclick=()=>$("modal").classList.add("hidden");$("newChat").onclick=()=>{msgs=[];render();$("drawer").classList.add("hidden")};
-async function checkUpdate(){try{let r=await fetch(VERSION_URL+"?t="+Date.now(),{cache:"no-store"});let v=(await r.json()).version||"";if(v&&v!==WEB_VERSION){$("updateText").textContent="New version available: "+v;$("updateNotice").classList.remove("hidden");$("updateBtn").onclick=()=>location.href=APK_URL}}catch(e){}}
-function render(){let box=$("messages");box.innerHTML="";if(!msgs.length){box.innerHTML='<div class="empty"><b>wMetax ai</b>Ask anything. Auto will choose the best model.</div>';return}msgs.forEach(m=>{let b=document.createElement("div");b.className="bubble "+(m.u?"user":"ai");b.textContent=m.t;if(!m.u){let q=document.createElement("div");q.className="meta";q.textContent=m.model+(m.auto?" (Auto)":" (Manual)");b.appendChild(q)}box.appendChild(b)});box.scrollTop=box.scrollHeight}
-function send(){let t=$("input").value.trim();if(!t)return;msgs.push({u:true,t});$("input").value="";render();let auto=selected==="Auto",m=auto?"ChatGPT":selected;setTimeout(()=>{msgs.push({u:false,t:"در حال حاضر Gateway هوش مصنوعی هنوز به Provider متصل نشده است. این بخش بعدی است.",model:m,auto});render()},300)}
-$("send").onclick=send;$("input").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send()}});checkUpdate();
-</script></body></html>
+
+const MODELS=[
+"Auto",
+"ChatGPT",
+"Claude",
+"Grok",
+"Gemini",
+"DeepSeek",
+"Perplexity"
+];
+
+let selectedModel="Auto";
+let messages=[];
+
+const $=id=>document.getElementById(id);
+
+
+/* MODEL MENU */
+
+MODELS.forEach(model=>{
+
+const item=document.createElement("div");
+
+item.className="item";
+
+item.innerHTML=`
+<span>${model}</span>
+<small>
+${model==="Auto"?"Best model":"Available"}
+</small>
+`;
+
+item.onclick=()=>{
+
+selectedModel=model;
+
+$("modelBtn").textContent=
+model+" ⌄";
+
+$("modelMenu")
+.classList.add("hidden");
+
+};
+
+$("modelMenu").appendChild(item);
+
+});
+
+
+$("modelBtn").onclick=()=>{
+
+$("modelMenu")
+.classList.toggle("hidden");
+
+};
+
+
+/* RENDER CHAT */
+
+function render(){
+
+const box=$("messages");
+
+box.innerHTML="";
+
+if(messages.length===0){
+
+box.innerHTML=`
+<div class="empty">
+<b>wMetax ai</b>
+Ask anything.
+</div>
+`;
+
+return;
+
+}
+
+messages.forEach(message=>{
+
+const bubble=document.createElement("div");
+
+bubble.className=
+"bubble "+
+(message.role==="user"?"user":"ai");
+
+bubble.textContent=message.content;
+
+box.appendChild(bubble);
+
+});
+
+box.scrollTop=box.scrollHeight;
+
+}
+
+
+/* SEND MESSAGE */
+
+async function sendMessage(){
+
+const input=$("input");
+
+const text=input.value.trim();
+
+if(!text)return;
+
+
+/* USER MESSAGE */
+
+messages.push({
+
+role:"user",
+
+content:text
+
+});
+
+input.value="";
+
+render();
+
+$("status").textContent=
+"Connecting to AI…";
+
+
+/*
+IMPORTANT:
+
+The real AI Gateway will be inserted here.
+
+Frontend will NOT contain
+a permanent API key.
+*/
+
+try{
+
+/*
+Temporary local demo response.
+This replaces the old fake
+"Gateway not connected" message.
+
+The next backend connection
+will replace this block.
+*/
+
+await new Promise(
+resolve=>setTimeout(resolve,600)
+);
+
+messages.push({
+
+role:"assistant",
+
+content:
+"wMetax ai is ready for the AI Gateway.\n\nSelected model: "+
+selectedModel+
+"\n\nThe interface is connected and waiting for the real AI provider."
+
+});
+
+$("status").textContent="Ready";
+
+render();
+
+}catch(error){
+
+messages.push({
+
+role:"assistant",
+
+content:
+"Connection error: "+
+error.message
+
+});
+
+$("status").textContent="Error";
+
+render();
+
+}
+
+}
+
+
+/* SEND BUTTON */
+
+$("send").onclick=sendMessage;
+
+
+/* ENTER TO SEND */
+
+$("input").addEventListener(
+"keydown",
+event=>{
+
+if(
+event.key==="Enter" &&
+!event.shiftKey
+){
+
+event.preventDefault();
+
+sendMessage();
+
+}
+
+});
+
+
+/* CLOSE MODEL MENU */
+
+document.addEventListener(
+"click",
+event=>{
+
+if(
+!event.target.closest(".model")
+){
+
+$("modelMenu")
+.classList.add("hidden");
+
+}
+
+});
+
+
+</script>
+
+</body>
+</html>
